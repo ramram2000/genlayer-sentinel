@@ -90,11 +90,17 @@ async function init() {
 }
 
 async function connectWallet() {
-  if (!window.ethereum) throw new Error("Wallet not found.");
+  if (!window.ethereum) {
+    throw new Error("Rabby not found.");
+  }
 
   const accounts = await window.ethereum.request({
     method: "eth_requestAccounts"
   });
+
+  if (!accounts || !accounts.length) {
+    throw new Error("Wallet account not connected.");
+  }
 
   account = accounts[0];
 
@@ -105,6 +111,8 @@ async function connectWallet() {
   });
 
   await writeClient.connect("studionet");
+
+  return writeClient;
 }
 
 async function loadStatus() {
