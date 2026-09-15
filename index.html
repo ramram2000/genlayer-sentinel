@@ -8,7 +8,12 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080a0f;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{
+  margin:0;
+  background:#080a0f;
+  color:#f5f7fa;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
 .container{max-width:900px;margin:auto;padding:45px 22px}
 header{display:flex;justify-content:space-between;align-items:center;margin-bottom:70px}
 .logo{font-size:22px;font-weight:800}
@@ -23,13 +28,47 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
 .paused{color:#ff7070}
 .card{background:#0d1118;border:1px solid #29313d;border-radius:18px;padding:26px;margin-top:20px}
 .card h2{font-size:17px;margin:0 0 18px}
-input{width:100%;padding:14px;border-radius:9px;border:1px solid #303a48;background:#080a0f;color:white;font-size:14px}
-button{width:100%;padding:14px;margin-top:13px;border:0;border-radius:9px;background:#f5f7fa;color:#080a0f;font-weight:800;cursor:pointer}
+input{
+  width:100%;
+  padding:14px;
+  border-radius:9px;
+  border:1px solid #303a48;
+  background:#080a0f;
+  color:white;
+  font-size:14px
+}
+button{
+  width:100%;
+  padding:14px;
+  margin-top:13px;
+  border:0;
+  border-radius:9px;
+  background:#f5f7fa;
+  color:#080a0f;
+  font-weight:800;
+  cursor:pointer
+}
 button:disabled{opacity:.5;cursor:not-allowed}
 .secondary{background:#171d26;color:#f5f7fa}
-pre{white-space:pre-wrap;color:#aeb7c3;font-size:13px;line-height:1.6}
-#message{text-align:center;color:#929dab;font-size:13px;margin-top:15px;min-height:20px}
-footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
+pre{
+  white-space:pre-wrap;
+  color:#aeb7c3;
+  font-size:13px;
+  line-height:1.6
+}
+#message{
+  text-align:center;
+  color:#929dab;
+  font-size:13px;
+  margin-top:15px;
+  min-height:20px
+}
+footer{
+  text-align:center;
+  color:#596474;
+  font-size:12px;
+  margin-top:50px
+}
 </style>
 </head>
 
@@ -38,83 +77,106 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 <div class="container">
 
 <header>
-<div class="logo">◈ SENTINEL</div>
-<div class="badge">GENLAYER · AUTONOMOUS SECURITY</div>
+  <div class="logo">◈ SENTINEL</div>
+  <div class="badge">GENLAYER · AUTONOMOUS SECURITY</div>
 </header>
 
 <section class="hero">
-<h1>Intelligent Emergency Halt</h1>
-<p>An autonomous security sentinel that detects credible active exploits and pauses vulnerable protocols before damage spreads.</p>
+  <h1>Intelligent Emergency Halt</h1>
+  <p>
+    An autonomous security sentinel that detects credible active exploits
+    and pauses vulnerable protocols before damage spreads.
+  </p>
 </section>
 
 <div class="status">
-<div class="label">PROTOCOL STATUS</div>
-<div id="status" class="value active">CONNECTING...</div>
+  <div class="label">PROTOCOL STATUS</div>
+  <div id="status" class="value active">CONNECTING...</div>
 </div>
 
 <div class="card">
-<h2>Report Security Evidence</h2>
-<input id="url" type="url" placeholder="Enter public security evidence URL">
-<button id="reportButton">Investigate &amp; Protect</button>
+  <h2>Report Security Evidence</h2>
+
+  <input
+    id="url"
+    type="url"
+    value="https://onchainattack.org/document/examples/2026-09-symbiosis-bridgev2-message-validation-unbacked-sybtc-mint/"
+    placeholder="Enter public security evidence URL"
+  >
+
+  <button id="reportButton">
+    Investigate &amp; Protect
+  </button>
 </div>
 
 <div class="card">
-<h2>Latest Incident</h2>
-<pre id="incident">Loading...</pre>
-<button id="incidentButton" class="secondary">Refresh Incident</button>
+  <h2>Latest Incident</h2>
+  <pre id="incident">Loading...</pre>
+
+  <button id="incidentButton" class="secondary">
+    Refresh Incident
+  </button>
 </div>
 
 <div class="card">
-<h2>Protocol Control</h2>
-<button id="resumeButton" class="secondary">Resume Protocol</button>
+  <h2>Protocol Control</h2>
+
+  <button id="resumeButton" class="secondary">
+    Resume Protocol
+  </button>
 </div>
 
 <div id="message"></div>
 
-<footer>Sentinel · Powered by GenLayer Intelligent Contracts</footer>
+<footer>
+  Sentinel · Powered by GenLayer Intelligent Contracts
+</footer>
 
 </div>
+
 
 <script type="module">
 
 import { createClient } from "https://esm.sh/genlayer-js";
 import { studionet } from "https://esm.sh/genlayer-js/chains";
 
+
 const CONTRACT =
-"0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
+  "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
+
 
 let readClient = null;
 let writeClient = null;
-let walletProvider = null;
 let account = null;
+let provider = null;
 let busy = false;
 
 
-/* -----------------------------
+/* =========================================================
    UI
------------------------------ */
+========================================================= */
 
 const statusEl =
-document.getElementById("status");
+  document.getElementById("status");
 
 const incidentEl =
-document.getElementById("incident");
+  document.getElementById("incident");
 
 const messageEl =
-document.getElementById("message");
+  document.getElementById("message");
 
 const reportButton =
-document.getElementById("reportButton");
+  document.getElementById("reportButton");
 
 const resumeButton =
-document.getElementById("resumeButton");
+  document.getElementById("resumeButton");
 
 const incidentButton =
-document.getElementById("incidentButton");
+  document.getElementById("incidentButton");
 
 
-function show(text) {
-  messageEl.textContent = text;
+function show(message) {
+  messageEl.textContent = message;
 }
 
 
@@ -130,124 +192,212 @@ function setStatus(paused) {
 }
 
 
-/* -----------------------------
-   RABBY EIP-6963 PROVIDER
------------------------------ */
+/* =========================================================
+   EIP-6963 PROVIDER DISCOVERY
+   We do NOT touch window.ethereum first.
+========================================================= */
 
-async function getRabbyProvider() {
+const discoveredProviders = new Map();
 
-  return new Promise((resolve) => {
 
-    let found = false;
+window.addEventListener(
+  "eip6963:announceProvider",
+  (event) => {
 
-    function handler(event) {
+    const detail = event.detail;
 
-      const detail = event.detail;
-
-      if (!detail || !detail.info) {
-        return;
-      }
-
-      console.log(
-        "Wallet detected:",
-        detail.info.name,
-        detail.info.rdns
-      );
-
-      if (
-        detail.info.rdns === "io.rabby"
-      ) {
-
-        found = true;
-
-        window.removeEventListener(
-          "eip6963:announceProvider",
-          handler
-        );
-
-        resolve(detail.provider);
-      }
+    if (
+      !detail ||
+      !detail.info ||
+      !detail.provider
+    ) {
+      return;
     }
 
-    window.addEventListener(
-      "eip6963:announceProvider",
-      handler
+    discoveredProviders.set(
+      detail.info.uuid,
+      detail
     );
 
-    window.dispatchEvent(
-      new Event("eip6963:requestProvider")
+    console.log(
+      "EIP-6963 provider:",
+      detail.info.name,
+      detail.info.rdns
+    );
+  }
+);
+
+
+/*
+   Ask all injected wallets to announce themselves.
+*/
+window.dispatchEvent(
+  new Event("eip6963:requestProvider")
+);
+
+
+/* =========================================================
+   FIND RABBY
+========================================================= */
+
+async function getWalletProvider() {
+
+  /*
+     Give wallet extensions a moment to announce.
+  */
+  await new Promise(
+    resolve => setTimeout(resolve, 300)
+  );
+
+
+  const providers =
+    Array.from(
+      discoveredProviders.values()
     );
 
-    setTimeout(() => {
 
-      if (!found) {
+  console.log(
+    "Discovered providers:",
+    providers.map(
+      p => ({
+        name:p.info.name,
+        rdns:p.info.rdns
+      })
+    )
+  );
 
-        window.removeEventListener(
-          "eip6963:announceProvider",
-          handler
-        );
 
-        if (window.ethereum) {
-          resolve(window.ethereum);
-        } else {
-          resolve(null);
-        }
-      }
+  /*
+     Prefer an explicitly Rabby-looking provider.
+     Do not depend on one exact RDNS string.
+  */
 
-    }, 1200);
+  let rabby =
+    providers.find((item) => {
 
-  });
+      const name =
+        String(
+          item.info.name || ""
+        ).toLowerCase();
+
+      const rdns =
+        String(
+          item.info.rdns || ""
+        ).toLowerCase();
+
+      return (
+        name.includes("rabby") ||
+        rdns.includes("rabby") ||
+        rdns.includes("rabby.io")
+      );
+
+    });
+
+
+  if (rabby) {
+
+    console.log(
+      "Using Rabby EIP-6963 provider"
+    );
+
+    return rabby.provider;
+  }
+
+
+  /*
+     If only one EIP-6963 provider exists,
+     use it.
+  */
+
+  if (providers.length === 1) {
+
+    console.log(
+      "Using the only discovered EIP-6963 provider"
+    );
+
+    return providers[0].provider;
+  }
+
+
+  /*
+     Legacy fallback only.
+     This is deliberately last.
+  */
+
+  if (window.ethereum) {
+
+    console.log(
+      "Using legacy window.ethereum fallback"
+    );
+
+    return window.ethereum;
+  }
+
+
+  throw new Error(
+    "No EIP-1193 wallet provider detected."
+  );
 }
 
 
-/* -----------------------------
-   CONNECT RABBY
------------------------------ */
+/* =========================================================
+   CONNECT WALLET
+========================================================= */
 
 async function connectWallet() {
 
-  walletProvider =
-    await getRabbyProvider();
+  provider =
+    await getWalletProvider();
 
-  if (!walletProvider) {
-    throw new Error(
-      "Rabby wallet was not detected."
-    );
-  }
+
+  /*
+     Ask the selected provider for the account.
+  */
 
   const accounts =
-    await walletProvider.request({
-      method: "eth_requestAccounts"
+    await provider.request({
+      method:"eth_requestAccounts"
     });
+
 
   if (
     !accounts ||
     accounts.length === 0
   ) {
     throw new Error(
-      "No Rabby account connected."
+      "No wallet account connected."
     );
   }
 
-  account = accounts[0];
+
+  account =
+    accounts[0];
+
 
   console.log(
-    "Rabby account:",
+    "Wallet account:",
     account
   );
 
 
+  /*
+     IMPORTANT:
+     Create the GenLayer write client with the
+     exact same EIP-1193 provider.
+  */
+
   writeClient =
     createClient({
-
-      chain: studionet,
-
-      account: account,
-
-      provider: walletProvider
-
+      chain:studionet,
+      account:account,
+      provider:provider
     });
 
+
+  /*
+     Let GenLayerJS handle the network connection.
+     This is the documented browser-wallet flow.
+  */
 
   await writeClient.connect(
     "studionet"
@@ -258,9 +408,9 @@ async function connectWallet() {
 }
 
 
-/* -----------------------------
-   INITIALIZE
------------------------------ */
+/* =========================================================
+   INITIAL READ CLIENT
+========================================================= */
 
 async function init() {
 
@@ -268,14 +418,20 @@ async function init() {
 
     readClient =
       createClient({
-        chain: studionet
+        chain:studionet
       });
+
 
     await loadStatus();
 
     await loadIncident();
 
-  } catch (error) {
+
+    show(
+      "Ready."
+    );
+
+  } catch(error) {
 
     console.error(
       "INIT ERROR:",
@@ -283,58 +439,86 @@ async function init() {
     );
 
     show(
+      error?.message ||
       "Unable to connect to GenLayer."
     );
   }
 }
 
 
-/* -----------------------------
-   READ STATUS
------------------------------ */
+/* =========================================================
+   STATUS
+========================================================= */
 
 async function loadStatus() {
 
   const paused =
     await readClient.readContract({
 
-      address: CONTRACT,
+      address:CONTRACT,
 
-      functionName:
-        "get_status",
+      functionName:"get_status",
 
-      args: []
+      args:[]
 
     });
 
-  setStatus(paused);
+
+  setStatus(
+    Boolean(paused)
+  );
 }
 
 
-/* -----------------------------
-   READ INCIDENT
------------------------------ */
+/* =========================================================
+   INCIDENT
+========================================================= */
 
 async function loadIncident() {
 
   try {
 
-    const data =
+    const result =
       await readClient.readContract({
 
-        address: CONTRACT,
+        address:CONTRACT,
 
         functionName:
           "get_last_incident",
 
-        args: []
+        args:[]
 
       });
 
-    incidentEl.textContent =
-      data;
 
-  } catch (error) {
+    let text =
+      String(result);
+
+
+    /*
+       Decode JSON returned by the contract.
+    */
+
+    try {
+
+      const parsed =
+        JSON.parse(text);
+
+      incidentEl.textContent =
+        JSON.stringify(
+          parsed,
+          null,
+          2
+        );
+
+    } catch {
+
+      incidentEl.textContent =
+        text;
+    }
+
+
+  } catch(error) {
 
     console.error(
       "INCIDENT ERROR:",
@@ -342,23 +526,28 @@ async function loadIncident() {
     );
 
     incidentEl.textContent =
-      "No incident loaded.";
+      "No incident available.";
   }
 }
 
 
-/* -----------------------------
+/* =========================================================
    REPORT EXPLOIT
------------------------------ */
+========================================================= */
 
 async function reportExploit() {
 
-  if (busy) return;
+  if (busy) {
+    return;
+  }
+
 
   busy = true;
 
   reportButton.disabled = true;
   resumeButton.disabled = true;
+  incidentButton.disabled = true;
+
 
   try {
 
@@ -392,15 +581,20 @@ async function reportExploit() {
 
     const write = {
 
-      address: CONTRACT,
+      address:CONTRACT,
 
       functionName:
         "report_exploit",
 
-      args: [url]
+      args:[url]
 
     };
 
+
+    /*
+       Official GenLayerJS flow:
+       estimate first, then submit the same write.
+    */
 
     const estimate =
       await writeClient
@@ -410,13 +604,24 @@ async function reportExploit() {
 
 
     console.log(
-      "Fee estimate:",
+      "GenLayer fee estimate:",
       estimate
     );
 
 
+    if (
+      !estimate ||
+      !estimate.distribution
+    ) {
+
+      throw new Error(
+        "GenLayer fee estimation failed."
+      );
+    }
+
+
     show(
-      "Please confirm the transaction in Rabby..."
+      "Confirm the transaction in Rabby..."
     );
 
 
@@ -425,10 +630,13 @@ async function reportExploit() {
 
         ...write,
 
-        fees: {
+        fees:{
 
           distribution:
             estimate.distribution,
+
+          messageAllocations:
+            estimate.messageAllocations,
 
           feeValue:
             estimate.feeValue
@@ -439,7 +647,7 @@ async function reportExploit() {
 
 
     console.log(
-      "Transaction:",
+      "GenLayer transaction:",
       txId
     );
 
@@ -450,9 +658,7 @@ async function reportExploit() {
 
 
     await writeClient.waitForDecision({
-
-      hash: txId
-
+      hash:txId
     });
 
 
@@ -466,16 +672,34 @@ async function reportExploit() {
     );
 
 
-  } catch (error) {
+  } catch(error) {
 
     console.error(
       "REPORT ERROR:",
       error
     );
 
-    show(
+
+    let message =
+      error?.shortMessage ||
       error?.message ||
-      String(error)
+      String(error);
+
+
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      error.cause?.message
+    ) {
+
+      message +=
+        " — " +
+        error.cause.message;
+    }
+
+
+    show(
+      message
     );
 
   } finally {
@@ -484,22 +708,28 @@ async function reportExploit() {
 
     reportButton.disabled = false;
     resumeButton.disabled = false;
+    incidentButton.disabled = false;
   }
 }
 
 
-/* -----------------------------
-   RESUME
------------------------------ */
+/* =========================================================
+   RESUME PROTOCOL
+========================================================= */
 
 async function resumeProtocol() {
 
-  if (busy) return;
+  if (busy) {
+    return;
+  }
+
 
   busy = true;
 
   reportButton.disabled = true;
   resumeButton.disabled = true;
+  incidentButton.disabled = true;
+
 
   try {
 
@@ -513,12 +743,12 @@ async function resumeProtocol() {
 
     const write = {
 
-      address: CONTRACT,
+      address:CONTRACT,
 
       functionName:
         "resume_protocol",
 
-      args: []
+      args:[]
 
     };
 
@@ -530,8 +760,19 @@ async function resumeProtocol() {
         );
 
 
+    if (
+      !estimate ||
+      !estimate.distribution
+    ) {
+
+      throw new Error(
+        "GenLayer fee estimation failed."
+      );
+    }
+
+
     show(
-      "Please confirm the transaction in Rabby..."
+      "Confirm the transaction in Rabby..."
     );
 
 
@@ -540,10 +781,13 @@ async function resumeProtocol() {
 
         ...write,
 
-        fees: {
+        fees:{
 
           distribution:
             estimate.distribution,
+
+          messageAllocations:
+            estimate.messageAllocations,
 
           feeValue:
             estimate.feeValue
@@ -554,14 +798,12 @@ async function resumeProtocol() {
 
 
     show(
-      "Waiting for transaction..."
+      "Waiting for protocol decision..."
     );
 
 
     await writeClient.waitForDecision({
-
-      hash: txId
-
+      hash:txId
     });
 
 
@@ -575,16 +817,34 @@ async function resumeProtocol() {
     );
 
 
-  } catch (error) {
+  } catch(error) {
 
     console.error(
       "RESUME ERROR:",
       error
     );
 
-    show(
+
+    let message =
+      error?.shortMessage ||
       error?.message ||
-      String(error)
+      String(error);
+
+
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      error.cause?.message
+    ) {
+
+      message +=
+        " — " +
+        error.cause.message;
+    }
+
+
+    show(
+      message
     );
 
   } finally {
@@ -593,13 +853,14 @@ async function resumeProtocol() {
 
     reportButton.disabled = false;
     resumeButton.disabled = false;
+    incidentButton.disabled = false;
   }
 }
 
 
-/* -----------------------------
-   BUTTONS
------------------------------ */
+/* =========================================================
+   EVENTS
+========================================================= */
 
 reportButton.addEventListener(
   "click",
@@ -613,13 +874,30 @@ resumeButton.addEventListener(
 
 incidentButton.addEventListener(
   "click",
-  loadIncident
+  async () => {
+
+    try {
+
+      await loadIncident();
+
+      show(
+        "Incident refreshed."
+      );
+
+    } catch(error) {
+
+      show(
+        error?.message ||
+        String(error)
+      );
+    }
+  }
 );
 
 
-/* -----------------------------
+/* =========================================================
    START
------------------------------ */
+========================================================= */
 
 init();
 
