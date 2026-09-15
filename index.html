@@ -51,18 +51,18 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 <div class="card">
 <h2>Report Security Evidence</h2>
 <input id="url" placeholder="Enter public security evidence URL">
-<button id="reportButton" onclick="reportExploit()">Investigate &amp; Protect</button>
+<button id="reportButton">Investigate &amp; Protect</button>
 </div>
 
 <div class="card">
 <h2>Latest Incident</h2>
 <pre id="incident">Loading...</pre>
-<button class="secondary" onclick="loadIncident()">Refresh Incident</button>
+<button class="secondary" id="incidentButton">Refresh Incident</button>
 </div>
 
 <div class="card">
 <h2>Protocol Control</h2>
-<button class="secondary" onclick="resumeProtocol()">Resume Protocol</button>
+<button class="secondary" id="resumeButton">Resume Protocol</button>
 </div>
 
 <div id="message"></div>
@@ -72,8 +72,8 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 
 <script type="module">
 
-import { createClient } from "https://esm.sh/genlayer-js";
-import { studionet } from "https://esm.sh/genlayer-js/chains";
+import { createClient } from "https://esm.sh/genlayer-js@1.1.8";
+import { studionet } from "https://esm.sh/genlayer-js@1.1.8/chains";
 
 const CONTRACT = "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
 
@@ -82,19 +82,24 @@ let writeClient = null;
 let account = null;
 let busy = false;
 
+const statusEl = document.getElementById("status");
+const messageEl = document.getElementById("message");
+const incidentEl = document.getElementById("incident");
+const reportButton = document.getElementById("reportButton");
+const resumeButton = document.getElementById("resumeButton");
+const incidentButton = document.getElementById("incidentButton");
+
 function show(text) {
-  document.getElementById("message").textContent = text;
+  messageEl.textContent = text;
 }
 
 function setStatus(paused) {
-  const el = document.getElementById("status");
-
   if (paused) {
-    el.textContent = "PAUSED";
-    el.className = "value paused";
+    statusEl.textContent = "PAUSED";
+    statusEl.className = "value paused";
   } else {
-    el.textContent = "ACTIVE";
-    el.className = "value active";
+    statusEl.textContent = "ACTIVE";
+    statusEl.className = "value active";
   }
 }
 
@@ -119,13 +124,11 @@ async function connectWallet() {
     throw new Error("Rabby wallet not found.");
   }
 
-  show("Connecting wallet...");
-
   const accounts = await window.ethereum.request({
     method: "eth_requestAccounts"
   });
 
-  if (!accounts || accounts.length === 0) {
+  if (!accounts || !accounts.length) {
     throw new Error("No wallet account connected.");
   }
 
@@ -144,22 +147,13 @@ async function connectWallet() {
 
 async function loadStatus() {
 
-  try {
+  const paused = await readClient.readContract({
+    address: CONTRACT,
+    functionName: "get_status",
+    args: []
+  });
 
-    const paused = await readClient.readContract({
-      address: CONTRACT,
-      functionName: "get_status",
-      args: []
-    });
-
-    setStatus(paused);
-
-  } catch (e) {
-
-    console.error(e);
-
-    document.getElementById("status").textContent = "ERROR";
-  }
+  setStatus(paused);
 }
 
 async function loadIncident() {
@@ -172,13 +166,13 @@ async function loadIncident() {
       args: []
     });
 
-    document.getElementById("incident").textContent = data;
+    incidentEl.textContent = data;
 
   } catch (e) {
 
     console.error(e);
+    incidentEl.textContent = "No incident loaded.";
 
-    document.getElementById("incident").textContent = "No incident loaded.";
   }
 }
 
@@ -186,22 +180,23 @@ async function reportExploit() {
 
   if (busy) return;
 
-  busy = true;
+  const url = document.getElementById("url").value.trim();
 
-  const button = document.getElementById("reportButton");
-  button.disabled = true;
+  if (!url) {
+    show("Enter an evidence URL.");
+    return;
+  }
+
+  busy = true;
+  reportButton.disabled = true;
 
   try {
 
-    const url = document.getElementById("url").value.trim();
-
-    if (!url) {
-      throw new Error("Enter an evidence URL.");
-    }
+    show("Connecting wallet...");
 
     await connectWallet();
 
-    show("Preparing GenLayer transaction...");
+    show("Estimating transaction fees...");
 
     const write = {
       address: CONTRACT,
@@ -209,54 +204,25 @@ async function reportExploit() {
       args: [url]
     };
 
-    console.log("ACCOUNT:", account);
-    console.log("WRITE:", write);
-
-    let fees;
-
-    try {
-
-      fees = await writeClient.estimateTransactionFeesForWrite({
+    const fees =
+      await writeClient.estimateTransactionFeesForWrite({
         ...write,
         account: account
       });
 
-    } catch (e) {
-
-      console.error("FEE ERROR:", e);
-
-      throw new Error(
-        "Fee estimation failed: " +
-        (e?.message || String(e))
-      );
-    }
-
+    console.log("ACCOUNT:", account);
     console.log("FEES:", fees);
 
     show("Please confirm the transaction in Rabby...");
 
-    let tx;
-
-    try {
-
-      tx = await writeClient.writeContract({
-        ...write,
-        account: account,
-        fees: {
-          distribution: fees.distribution,
-          feeValue: fees.feeValue
-        }
-      });
-
-    } catch (e) {
-
-      console.error("WRITE ERROR:", e);
-
-      throw new Error(
-        "Transaction failed: " +
-        (e?.message || String(e))
-      );
-    }
+    const tx = await writeClient.writeContract({
+      ...write,
+      account: account,
+      fees: {
+        distribution: fees.distribution,
+        feeValue: fees.feeValue
+      }
+    });
 
     console.log("TX:", tx);
 
@@ -273,14 +239,19 @@ async function reportExploit() {
 
   } catch (e) {
 
-    console.error("REPORT ERROR:", e);
+    console.error(e);
 
-    show(e?.message || "Transaction failed.");
+    show(
+      e && e.message
+        ? e.message
+        : "Transaction failed."
+    );
 
   } finally {
 
     busy = false;
-    button.disabled = false;
+    reportButton.disabled = false;
+
   }
 }
 
@@ -289,12 +260,13 @@ async function resumeProtocol() {
   if (busy) return;
 
   busy = true;
+  resumeButton.disabled = true;
 
   try {
 
-    await connectWallet();
+    show("Connecting wallet...");
 
-    show("Preparing resume transaction...");
+    await connectWallet();
 
     const write = {
       address: CONTRACT,
@@ -310,15 +282,14 @@ async function resumeProtocol() {
 
     show("Please confirm the transaction in Rabby...");
 
-    const tx =
-      await writeClient.writeContract({
-        ...write,
-        account: account,
-        fees: {
-          distribution: fees.distribution,
-          feeValue: fees.feeValue
-        }
-      });
+    const tx = await writeClient.writeContract({
+      ...write,
+      account: account,
+      fees: {
+        distribution: fees.distribution,
+        feeValue: fees.feeValue
+      }
+    });
 
     show("Waiting for transaction...");
 
@@ -333,33 +304,36 @@ async function resumeProtocol() {
 
   } catch (e) {
 
-    console.error("RESUME ERROR:", e);
+    console.error(e);
 
-    show(e?.message || "Transaction failed.");
+    show(
+      e && e.message
+        ? e.message
+        : "Transaction failed."
+    );
 
   } finally {
 
     busy = false;
+    resumeButton.disabled = false;
+
   }
 }
 
-window.reportExploit = reportExploit;
-window.resumeProtocol = resumeProtocol;
-window.loadIncident = loadIncident;
+reportButton.addEventListener(
+  "click",
+  reportExploit
+);
 
-if (window.ethereum) {
+resumeButton.addEventListener(
+  "click",
+  resumeProtocol
+);
 
-  window.ethereum.on("accountsChanged", accounts => {
-
-    if (accounts && accounts.length) {
-      account = accounts[0];
-    } else {
-      account = null;
-      writeClient = null;
-    }
-
-  });
-}
+incidentButton.addEventListener(
+  "click",
+  loadIncident
+);
 
 init();
 
