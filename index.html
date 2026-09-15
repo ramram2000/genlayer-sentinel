@@ -1,9 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Sentinel — Intelligent Emergency Halt</title>
 
 <style>
@@ -13,44 +13,39 @@ body{
   margin:0;
   background:#080a0f;
   color:#f5f7fa;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
 
 .container{
   max-width:900px;
   margin:auto;
-  padding:45px 22px;
+  padding:45px 22px
 }
 
 header{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:70px;
+  margin-bottom:70px
 }
 
-.logo{
-  font-size:22px;
-  font-weight:800;
-}
+.logo{font-size:22px;font-weight:800}
 
 .badge{
   border:1px solid #29313d;
   border-radius:30px;
   padding:8px 13px;
   color:#929dab;
-  font-size:11px;
+  font-size:11px
 }
 
-.hero{
-  text-align:center;
-}
+.hero{text-align:center}
 
 .hero h1{
   font-size:52px;
   line-height:1.05;
   letter-spacing:-2px;
-  margin:0 0 18px;
+  margin:0 0 18px
 }
 
 .hero p{
@@ -58,7 +53,7 @@ header{
   font-size:16px;
   line-height:1.7;
   max-width:620px;
-  margin:auto;
+  margin:auto
 }
 
 .status{
@@ -67,43 +62,41 @@ header{
   max-width:600px;
   background:#0d1118;
   border:1px solid #29313d;
-  border-radius:18px;
+  border-radius:18px
 }
 
 .label{
   font-size:11px;
   color:#778291;
-  letter-spacing:1.5px;
+  letter-spacing:1.5px
 }
 
 .value{
   font-size:30px;
   font-weight:800;
-  margin-top:8px;
+  margin-top:8px
 }
 
-.active{
-  color:#6ee7a0;
-}
+.active{color:#6ee7a0}
+.paused{color:#ff7070}
 
-.paused{
-  color:#ff7070;
+.wallet,.card{
+  background:#0d1118;
+  border:1px solid #29313d;
+  border-radius:18px
 }
 
 .wallet{
   margin:20px auto 0;
   padding:22px;
-  max-width:600px;
-  background:#0d1118;
-  border:1px solid #29313d;
-  border-radius:18px;
+  max-width:600px
 }
 
 .wallet-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:15px;
+  gap:15px
 }
 
 .wallet-status{
@@ -111,7 +104,7 @@ header{
   align-items:center;
   gap:9px;
   font-size:14px;
-  font-weight:700;
+  font-weight:700
 }
 
 .dot{
@@ -119,43 +112,37 @@ header{
   height:9px;
   border-radius:50%;
   background:#ff7070;
-  flex-shrink:0;
+  flex-shrink:0
 }
 
-.dot.connected{
-  background:#6ee7a0;
-}
+.dot.connected{background:#6ee7a0}
 
 .wallet-address{
   margin-top:9px;
   color:#929dab;
-  font-size:12px;
-  word-break:break-all;
+  font-size:12px
 }
 
 .wallet-note{
   margin-top:12px;
   color:#596474;
-  font-size:11px;
+  font-size:11px
 }
 
 .wallet button{
   width:auto;
   min-width:130px;
-  margin:0;
+  margin:0
 }
 
 .card{
-  background:#0d1118;
-  border:1px solid #29313d;
-  border-radius:18px;
   padding:26px;
-  margin-top:20px;
+  margin-top:20px
 }
 
 .card h2{
   font-size:17px;
-  margin:0 0 18px;
+  margin:0 0 18px
 }
 
 input{
@@ -166,7 +153,7 @@ input{
   background:#080a0f;
   color:white;
   font-size:14px;
-  outline:none;
+  outline:none
 }
 
 button{
@@ -179,17 +166,17 @@ button{
   color:#080a0f;
   font-weight:800;
   cursor:pointer;
-  font-size:14px;
+  font-size:14px
 }
 
 button:disabled{
   opacity:.5;
-  cursor:not-allowed;
+  cursor:not-allowed
 }
 
 .secondary{
   background:#171d26;
-  color:#f5f7fa;
+  color:#f5f7fa
 }
 
 pre{
@@ -198,7 +185,7 @@ pre{
   color:#aeb7c3;
   font-size:13px;
   line-height:1.6;
-  min-height:24px;
+  min-height:24px
 }
 
 #message{
@@ -206,35 +193,24 @@ pre{
   color:#929dab;
   font-size:13px;
   margin-top:15px;
-  min-height:20px;
+  min-height:20px
 }
 
 footer{
   text-align:center;
   color:#596474;
   font-size:12px;
-  margin-top:50px;
+  margin-top:50px
 }
 
 @media(max-width:650px){
-
-  header{
-    margin-bottom:50px;
-  }
-
-  .hero h1{
-    font-size:40px;
-  }
-
+  header{margin-bottom:50px}
+  .hero h1{font-size:40px}
   .wallet-row{
     align-items:flex-start;
-    flex-direction:column;
+    flex-direction:column
   }
-
-  .wallet button{
-    width:100%;
-  }
-
+  .wallet button{width:100%}
 }
 </style>
 </head>
@@ -249,24 +225,16 @@ footer{
 </header>
 
 <section class="hero">
-
   <h1>Intelligent Emergency Halt</h1>
-
   <p>
     An autonomous security sentinel that detects credible active exploits
     and pauses vulnerable protocols before damage spreads.
   </p>
-
 </section>
 
 <div class="status">
-
   <div class="label">PROTOCOL STATUS</div>
-
-  <div id="status" class="value active">
-    CONNECTING...
-  </div>
-
+  <div id="status" class="value active">CONNECTING...</div>
 </div>
 
 <div class="wallet">
@@ -274,7 +242,6 @@ footer{
   <div class="wallet-row">
 
     <div>
-
       <div class="wallet-status">
         <span id="walletDot" class="dot"></span>
         <span id="walletStatus">Wallet Disconnected</span>
@@ -283,7 +250,6 @@ footer{
       <div id="walletAddress" class="wallet-address">
         No wallet connected
       </div>
-
     </div>
 
     <button id="walletButton" type="button">
@@ -350,46 +316,17 @@ footer{
 import { createClient } from "https://esm.sh/genlayer-js@1.1.8";
 import { studionet } from "https://esm.sh/genlayer-js@1.1.8/chains";
 
-
-/* =========================================================
-   CONTRACT
-========================================================= */
-
 const CONTRACT =
   "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
 
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let readClient = null;
-let writeClient = null;
-let account = null;
-let busy = false;
-
-
-/* =========================================================
-   ELEMENTS
-========================================================= */
-
-const statusElement =
+const statusEl =
   document.getElementById("status");
 
-const incidentElement =
+const incidentEl =
   document.getElementById("incident");
 
-const messageElement =
+const messageEl =
   document.getElementById("message");
-
-const reportButton =
-  document.getElementById("reportButton");
-
-const resumeButton =
-  document.getElementById("resumeButton");
-
-const incidentButton =
-  document.getElementById("incidentButton");
 
 const walletButton =
   document.getElementById("walletButton");
@@ -403,37 +340,48 @@ const walletAddress =
 const walletDot =
   document.getElementById("walletDot");
 
+const reportButton =
+  document.getElementById("reportButton");
 
-/* =========================================================
-   MESSAGE
-========================================================= */
+const resumeButton =
+  document.getElementById("resumeButton");
 
-function show(message){
-  messageElement.textContent = message || "";
+const incidentButton =
+  document.getElementById("incidentButton");
+
+let readClient;
+let writeClient;
+let account = null;
+let busy = false;
+
+
+/* =========================
+   READ CLIENT
+========================= */
+
+readClient = createClient({
+  chain: studionet
+});
+
+
+/* =========================
+   UI
+========================= */
+
+function message(text){
+  messageEl.textContent = text || "";
 }
 
+function setStatus(paused){
 
-/* =========================================================
-   SHORT ADDRESS
-========================================================= */
+  statusEl.textContent =
+    paused ? "PAUSED" : "ACTIVE";
 
-function shortAddress(address){
-
-  if(!address) return "";
-
-  return (
-    address.slice(0,6) +
-    "..." +
-    address.slice(-4)
-  );
+  statusEl.className =
+    paused ? "value paused" : "value active";
 }
 
-
-/* =========================================================
-   WALLET UI
-========================================================= */
-
-function setWalletUI(address){
+function setWallet(address){
 
   if(address){
 
@@ -443,7 +391,9 @@ function setWalletUI(address){
       "Wallet Connected";
 
     walletAddress.textContent =
-      shortAddress(address);
+      address.slice(0,6) +
+      "..." +
+      address.slice(-4);
 
     walletButton.textContent =
       "Disconnect";
@@ -464,62 +414,47 @@ function setWalletUI(address){
 }
 
 
-/* =========================================================
-   STATUS UI
-========================================================= */
+/* =========================
+   READ STATUS
+========================= */
 
-function setStatus(paused){
+async function loadStatus(){
 
-  if(paused){
+  try{
 
-    statusElement.textContent = "PAUSED";
-    statusElement.className = "value paused";
+    const result =
+      await readClient.readContract({
 
-  }else{
+        address: CONTRACT,
 
-    statusElement.textContent = "ACTIVE";
-    statusElement.className = "value active";
+        functionName: "get_status",
+
+        args: []
+
+      });
+
+    setStatus(Boolean(result));
+
+  }catch(error){
+
+    console.error(
+      "STATUS ERROR:",
+      error
+    );
+
+    statusEl.textContent =
+      "UNAVAILABLE";
+
+    statusEl.className =
+      "value paused";
+
   }
 }
 
 
-/* =========================================================
-   READ CLIENT
-========================================================= */
-
-function createReadClient(){
-
-  readClient = createClient({
-    chain: studionet
-  });
-
-}
-
-
-/* =========================================================
-   LOAD STATUS
-========================================================= */
-
-async function loadStatus(){
-
-  const result =
-    await readClient.readContract({
-
-      address: CONTRACT,
-
-      functionName: "get_status",
-
-      args: []
-
-    });
-
-  setStatus(Boolean(result));
-}
-
-
-/* =========================================================
-   LOAD INCIDENT
-========================================================= */
+/* =========================
+   READ INCIDENT
+========================= */
 
 async function loadIncident(){
 
@@ -540,14 +475,17 @@ async function loadIncident(){
 
     try{
 
-      const parsed = JSON.parse(text);
-
-      incidentElement.textContent =
-        JSON.stringify(parsed, null, 2);
+      incidentEl.textContent =
+        JSON.stringify(
+          JSON.parse(text),
+          null,
+          2
+        );
 
     }catch{
 
-      incidentElement.textContent = text;
+      incidentEl.textContent =
+        text;
     }
 
   }catch(error){
@@ -557,74 +495,15 @@ async function loadIncident(){
       error
     );
 
-    incidentElement.textContent =
+    incidentEl.textContent =
       "No incident available.";
   }
 }
 
 
-/* =========================================================
-   CHECK EXISTING WALLET
-========================================================= */
-
-async function checkExistingWallet(){
-
-  if(!window.ethereum){
-
-    setWalletUI(null);
-    return;
-  }
-
-  try{
-
-    const accounts =
-      await window.ethereum.request({
-        method: "eth_accounts"
-      });
-
-    if(accounts && accounts.length){
-
-      account = accounts[0];
-
-      writeClient =
-        createClient({
-
-          chain: studionet,
-
-          account: account,
-
-          provider: window.ethereum
-
-        });
-
-      setWalletUI(account);
-
-    }else{
-
-      account = null;
-      writeClient = null;
-
-      setWalletUI(null);
-    }
-
-  }catch(error){
-
-    console.error(
-      "ACCOUNT CHECK ERROR:",
-      error
-    );
-
-    account = null;
-    writeClient = null;
-
-    setWalletUI(null);
-  }
-}
-
-
-/* =========================================================
-   CONNECT METAMASK
-========================================================= */
+/* =========================
+   CONNECT WALLET
+========================= */
 
 async function connectWallet(){
 
@@ -635,484 +514,263 @@ async function connectWallet(){
     );
   }
 
-  show("Opening MetaMask...");
+  message(
+    "Opening MetaMask..."
+  );
 
   const accounts =
     await window.ethereum.request({
-      method: "eth_requestAccounts"
+
+      method:
+        "eth_requestAccounts"
+
     });
 
-  if(!accounts || !accounts.length){
+  if(!accounts.length){
 
     throw new Error(
-      "No MetaMask account was returned."
+      "No MetaMask account returned."
     );
   }
 
   account = accounts[0];
-
-  show("Connecting to GenLayer Studionet...");
 
   writeClient =
     createClient({
 
       chain: studionet,
 
-      account: account,
+      account,
 
-      provider: window.ethereum
+      provider:
+        window.ethereum
 
     });
 
-  await writeClient.connect("studionet");
+  setWallet(account);
 
-  setWalletUI(account);
-
-  show("MetaMask connected.");
-
-  return writeClient;
+  message(
+    "MetaMask connected."
+  );
 }
 
 
-/* =========================================================
-   ENSURE WALLET
-========================================================= */
+/* =========================
+   DISCONNECT
+========================= */
 
-async function ensureWallet(){
+function disconnectWallet(){
 
-  if(!window.ethereum){
+  account = null;
 
-    throw new Error(
-      "MetaMask was not detected."
-    );
-  }
+  writeClient = null;
 
-  if(account && writeClient){
+  setWallet(null);
 
-    return writeClient;
-  }
-
-  await connectWallet();
-
-  return writeClient;
+  message(
+    "Wallet disconnected."
+  );
 }
 
 
-/* =========================================================
+/* =========================
    WALLET BUTTON
-========================================================= */
-
-async function handleWalletButton(){
-
-  if(busy) return;
-
-  try{
-
-    if(account){
-
-      account = null;
-      writeClient = null;
-
-      setWalletUI(null);
-
-      show("Wallet disconnected.");
-
-      return;
-    }
-
-    busy = true;
-
-    walletButton.disabled = true;
-
-    await connectWallet();
-
-  }catch(error){
-
-    console.error(
-      "WALLET ERROR:",
-      error
-    );
-
-    show(
-      error?.message ||
-      String(error)
-    );
-
-  }finally{
-
-    busy = false;
-
-    walletButton.disabled = false;
-  }
-}
-
-
-/* =========================================================
-   REPORT EXPLOIT
-========================================================= */
-
-async function reportExploit(){
-
-  if(busy) return;
-
-  const evidenceUrl =
-    document.getElementById("url").value.trim();
-
-  if(!evidenceUrl){
-
-    show("Please enter an evidence URL.");
-    return;
-  }
-
-  try{
-
-    busy = true;
-
-    reportButton.disabled = true;
-
-    show("Preparing MetaMask transaction...");
-
-    const client =
-      await ensureWallet();
-
-    const write = {
-
-      address: CONTRACT,
-
-      functionName: "report_exploit",
-
-      args: [evidenceUrl]
-
-    };
-
-    console.log(
-      "WRITE REQUEST:",
-      write
-    );
-
-    show("Waiting for MetaMask confirmation...");
-
-    /*
-      IMPORTANT:
-      No estimateTransactionFeesForWrite() here.
-
-      The currently loaded browser SDK does not expose that
-      method, so we submit the write directly first.
-    */
-
-    const txId =
-      await client.writeContract(write);
-
-    console.log(
-      "TRANSACTION ID:",
-      txId
-    );
-
-    show(
-      "Transaction submitted. Waiting for GenLayer..."
-    );
-
-    if(
-      client.waitForDecision &&
-      txId
-    ){
-
-      try{
-
-        await client.waitForDecision({
-          hash: txId
-        });
-
-      }catch(error){
-
-        console.warn(
-          "WAIT FOR DECISION:",
-          error
-        );
-      }
-    }
-
-    await loadStatus();
-    await loadIncident();
-
-    show(
-      "Investigation transaction completed."
-    );
-
-  }catch(error){
-
-    console.error(
-      "REPORT ERROR:",
-      error
-    );
-
-    show(
-      error?.message ||
-      String(error)
-    );
-
-  }finally{
-
-    busy = false;
-
-    reportButton.disabled = false;
-  }
-}
-
-
-/* =========================================================
-   RESUME PROTOCOL
-========================================================= */
-
-async function resumeProtocol(){
-
-  if(busy) return;
-
-  try{
-
-    busy = true;
-
-    resumeButton.disabled = true;
-
-    const client =
-      await ensureWallet();
-
-    const write = {
-
-      address: CONTRACT,
-
-      functionName: "resume_protocol",
-
-      args: []
-
-    };
-
-    console.log(
-      "RESUME REQUEST:",
-      write
-    );
-
-    show(
-      "Waiting for MetaMask confirmation..."
-    );
-
-    const txId =
-      await client.writeContract(write);
-
-    console.log(
-      "RESUME TRANSACTION ID:",
-      txId
-    );
-
-    show(
-      "Resume transaction submitted..."
-    );
-
-    if(
-      client.waitForDecision &&
-      txId
-    ){
-
-      try{
-
-        await client.waitForDecision({
-          hash: txId
-        });
-
-      }catch(error){
-
-        console.warn(
-          "WAIT FOR DECISION:",
-          error
-        );
-      }
-    }
-
-    await loadStatus();
-    await loadIncident();
-
-    show(
-      "Protocol resume transaction completed."
-    );
-
-  }catch(error){
-
-    console.error(
-      "RESUME ERROR:",
-      error
-    );
-
-    show(
-      error?.message ||
-      String(error)
-    );
-
-  }finally{
-
-    busy = false;
-
-    resumeButton.disabled = false;
-  }
-}
-
-
-/* =========================================================
-   EVENTS
-========================================================= */
+========================= */
 
 walletButton.addEventListener(
   "click",
-  handleWalletButton
-);
+  async () => {
 
-reportButton.addEventListener(
-  "click",
-  reportExploit
-);
-
-resumeButton.addEventListener(
-  "click",
-  resumeProtocol
-);
-
-incidentButton.addEventListener(
-  "click",
-  async function(){
+    if(busy) return;
 
     try{
 
-      incidentButton.disabled = true;
+      if(account){
 
-      show("Refreshing incident...");
+        disconnectWallet();
 
-      await loadIncident();
+        return;
+      }
 
-      show("Incident refreshed.");
+      await connectWallet();
 
     }catch(error){
 
       console.error(
-        "REFRESH ERROR:",
+        "WALLET ERROR:",
         error
       );
 
-      show(
+      message(
+        error?.message ||
+        String(error)
+      );
+    }
+  }
+);
+
+
+/* =========================
+   REPORT EXPLOIT
+========================= */
+
+reportButton.addEventListener(
+  "click",
+  async () => {
+
+    if(busy) return;
+
+    const evidenceUrl =
+      document
+        .getElementById("url")
+        .value
+        .trim();
+
+    if(!evidenceUrl){
+
+      message(
+        "Enter an evidence URL."
+      );
+
+      return;
+    }
+
+    try{
+
+      busy = true;
+
+      reportButton.disabled = true;
+
+      if(!account){
+
+        await connectWallet();
+      }
+
+      if(!writeClient){
+
+        throw new Error(
+          "Wallet client was not created."
+        );
+      }
+
+      const write = {
+
+        address: CONTRACT,
+
+        functionName:
+          "report_exploit",
+
+        args: [
+          evidenceUrl
+        ]
+
+      };
+
+      console.log(
+        "WRITE:",
+        write
+      );
+
+      message(
+        "Waiting for MetaMask confirmation..."
+      );
+
+      const tx =
+        await writeClient.writeContract(
+          write
+        );
+
+      console.log(
+        "TX:",
+        tx
+      );
+
+      message(
+        "Transaction submitted."
+      );
+
+      await loadStatus();
+
+      await loadIncident();
+
+      message(
+        "Investigation submitted."
+      );
+
+    }catch(error){
+
+      console.error(
+        "REPORT ERROR:",
+        error
+      );
+
+      message(
         error?.message ||
         String(error)
       );
 
     }finally{
 
-      incidentButton.disabled = false;
+      busy = false;
+
+      reportButton.disabled = false;
     }
   }
 );
 
 
-/* =========================================================
-   METAMASK EVENTS
-========================================================= */
+/* =========================
+   RESUME
+========================= */
 
-if(window.ethereum){
+resumeButton.addEventListener(
+  "click",
+  async () => {
 
-  window.ethereum.on(
-    "accountsChanged",
-    function(accounts){
+    if(busy) return;
 
-      if(accounts && accounts.length){
+    try{
 
-        account = accounts[0];
+      busy = true;
 
-        writeClient =
-          createClient({
+      resumeButton.disabled = true;
 
-            chain: studionet,
+      if(!account){
 
-            account: account,
-
-            provider: window.ethereum
-
-          });
-
-        setWalletUI(account);
-
-        show("Wallet account changed.");
-
-      }else{
-
-        account = null;
-        writeClient = null;
-
-        setWalletUI(null);
-
-        show("Wallet disconnected.");
+        await connectWallet();
       }
-    }
-  );
 
+      if(!writeClient){
 
-  window.ethereum.on(
-    "chainChanged",
-    function(chainId){
+        throw new Error(
+          "Wallet client was not created."
+        );
+      }
 
-      console.log(
-        "CHAIN CHANGED:",
-        chainId
+      message(
+        "Waiting for MetaMask confirmation..."
       );
 
-      if(chainId === "0xf22f"){
+      const tx =
+        await writeClient.writeContract({
 
-        show(
-          "GenLayer Studionet connected."
-        );
+          address: CONTRACT,
 
-      }else{
+          functionName:
+            "resume_protocol",
 
-        show(
-          "Please switch MetaMask to GenLayer Studionet."
-        );
-      }
-    }
-  );
-}
+          args: []
 
+        });
 
-/* =========================================================
-   INITIALIZE
-========================================================= */
+      console.log(
+        "RESUME TX:",
+        tx
+      );
 
-async function initialize(){
+      message(
+        "Resume transaction submitted."
+      );
 
-  try{
-
-    createReadClient();
-
-    await loadStatus();
-
-    await loadIncident();
-
-    await checkExistingWallet();
-
-    show("Ready.");
-
-  }catch(error){
-
-    console.error(
-      "INITIALIZE ERROR:",
-      error
-    );
-
-    show(
-      error?.message ||
-      String(error)
-    );
-  }
-}
-
-
-initialize();
-
-</script>
-
-</body>
-</html>
+      await loadStatus();
+```
