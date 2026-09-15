@@ -2,51 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sentinel — Intelligent Emergency Halt</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;background:#080a0f;color:#f5f7fa;
-  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-}
-.container{max-width:900px;margin:auto;padding:55px 22px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:80px}
-.logo{font-size:22px;font-weight:800;letter-spacing:-.5px}
-.badge{border:1px solid #26303d;border-radius:30px;padding:8px 14px;color:#9da8b6;font-size:12px}
-.hero{text-align:center;margin-bottom:55px}
-.hero h1{font-size:56px;line-height:1.05;margin:0 0 18px;letter-spacing:-2px}
-.hero p{color:#8e99a8;font-size:17px;max-width:600px;margin:auto;line-height:1.7}
-.status{
-  margin:40px auto;max-width:600px;padding:25px;
-  border:1px solid #27303c;border-radius:18px;background:#0d1118;
-}
-.status-label{color:#7f8a98;font-size:12px;text-transform:uppercase;letter-spacing:1.5px}
-.status-value{font-size:30px;font-weight:800;margin-top:8px}
-.active{color:#6ee7a0}
-.paused{color:#ff7474}
-.card{
-  background:#0d1118;border:1px solid #27303c;
-  border-radius:18px;padding:28px;margin-bottom:20px;
-}
-.card h2{font-size:18px;margin:0 0 20px}
-input{
-  width:100%;padding:15px;border-radius:10px;
-  border:1px solid #303a48;background:#080a0f;
-  color:white;font-size:14px;outline:none;
-}
-button{
-  margin-top:14px;width:100%;padding:14px;border:0;
-  border-radius:10px;background:#f5f7fa;color:#080a0f;
-  font-weight:800;cursor:pointer;font-size:14px;
-}
-button:hover{opacity:.88}
+body{margin:0;background:#080a0f;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.container{max-width:900px;margin:auto;padding:45px 22px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:70px}
+.logo{font-size:22px;font-weight:800}
+.badge{border:1px solid #29313d;border-radius:30px;padding:8px 13px;color:#929dab;font-size:11px}
+.hero{text-align:center}
+.hero h1{font-size:52px;line-height:1.05;letter-spacing:-2px;margin:0 0 18px}
+.hero p{color:#929dab;font-size:16px;line-height:1.7;max-width:620px;margin:auto}
+.status{margin:42px auto 22px;padding:25px;max-width:600px;background:#0d1118;border:1px solid #29313d;border-radius:18px}
+.label{font-size:11px;color:#778291;letter-spacing:1.5px}
+.value{font-size:30px;font-weight:800;margin-top:8px}
+.active{color:#6ee7a0}.paused{color:#ff7070}
+.card{background:#0d1118;border:1px solid #29313d;border-radius:18px;padding:26px;margin-top:20px}
+.card h2{font-size:17px;margin:0 0 18px}
+input{width:100%;padding:14px;border-radius:9px;border:1px solid #303a48;background:#080a0f;color:white;font-size:14px}
+button{width:100%;padding:14px;margin-top:13px;border:0;border-radius:9px;background:#f5f7fa;color:#080a0f;font-weight:800;cursor:pointer}
 .secondary{background:#171d26;color:#f5f7fa}
-pre{
-  white-space:pre-wrap;color:#aeb8c5;
-  font-size:13px;line-height:1.6;margin:0;
-}
-footer{text-align:center;color:#596474;font-size:12px;margin-top:55px}
+pre{white-space:pre-wrap;color:#aeb7c3;font-size:13px;line-height:1.6}
+#message{text-align:center;color:#929dab;font-size:13px;margin-top:15px}
+footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 </style>
 </head>
 
@@ -54,69 +33,205 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:55px}
 <div class="container">
 
 <header>
-  <div class="logo">◈ SENTINEL</div>
-  <div class="badge">GENLAYER · AUTONOMOUS SECURITY</div>
+<div class="logo">◈ SENTINEL</div>
+<div class="badge">GENLAYER · AUTONOMOUS SECURITY</div>
 </header>
 
 <section class="hero">
-  <h1>Intelligent Emergency Halt</h1>
-  <p>
-    An autonomous security sentinel that detects credible active exploits
-    and pauses vulnerable protocols before damage spreads.
-  </p>
+<h1>Intelligent Emergency Halt</h1>
+<p>An autonomous security sentinel that detects credible active exploits and pauses vulnerable protocols before damage spreads.</p>
 </section>
 
 <div class="status">
-  <div class="status-label">Protocol Status</div>
-  <div id="status" class="status-value active">ACTIVE</div>
+<div class="label">PROTOCOL STATUS</div>
+<div id="status" class="value active">CONNECTING...</div>
 </div>
 
 <div class="card">
-  <h2>Report Security Evidence</h2>
-  <input id="url" placeholder="Enter public security evidence URL">
-  <button onclick="reportExploit()">Investigate & Protect</button>
+<h2>Report Security Evidence</h2>
+<input id="url" placeholder="Enter public security evidence URL">
+<button onclick="reportExploit()">Investigate & Protect</button>
 </div>
 
 <div class="card">
-  <h2>Latest Incident</h2>
-  <pre id="incident">No incident loaded.</pre>
-  <button class="secondary" onclick="loadIncident()">Refresh Incident</button>
+<h2>Latest Incident</h2>
+<pre id="incident">Loading...</pre>
+<button class="secondary" onclick="loadIncident()">Refresh Incident</button>
 </div>
 
 <div class="card">
-  <h2>Protocol Control</h2>
-  <button class="secondary" onclick="resumeProtocol()">Resume Protocol</button>
+<h2>Protocol Control</h2>
+<button class="secondary" onclick="resumeProtocol()">Resume Protocol</button>
 </div>
 
-<footer>
-  Sentinel · Powered by GenLayer Intelligent Contracts
-</footer>
+<div id="message"></div>
 
+<footer>Sentinel · Powered by GenLayer Intelligent Contracts</footer>
 </div>
 
-<script>
-/*
-  Sentinel frontend
-  Contract integration will be connected here.
-*/
+<script type="module">
+import { createClient } from "https://esm.sh/genlayer-js";
+import { studionet } from "https://esm.sh/genlayer-js/chains";
 
-function setStatus(paused){
-  const el=document.getElementById("status");
-  el.textContent=paused ? "PAUSED" : "ACTIVE";
-  el.className="status-value "+(paused ? "paused":"active");
+const CONTRACT = "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
+
+let readClient;
+let writeClient;
+let account;
+
+async function init() {
+  try {
+    readClient = createClient({ chain: studionet });
+    await loadStatus();
+    await loadIncident();
+  } catch (e) {
+    show("Unable to connect to GenLayer.");
+  }
 }
 
-function reportExploit(){
-  alert("Connect this action to the deployed GenLayer Sentinel contract.");
+async function connectWallet() {
+  if (!window.ethereum) throw new Error("Wallet not found.");
+
+  const accounts = await window.ethereum.request({
+    method: "eth_requestAccounts"
+  });
+
+  account = accounts[0];
+
+  writeClient = createClient({
+    chain: studionet,
+    account: account,
+    provider: window.ethereum
+  });
+
+  await writeClient.connect("studionet");
 }
 
-function loadIncident(){
-  alert("Connect this action to the deployed GenLayer Sentinel contract.");
+async function loadStatus() {
+  try {
+    const paused = await readClient.readContract({
+      address: CONTRACT,
+      functionName: "get_status",
+      args: []
+    });
+
+    setStatus(paused);
+  } catch(e) {
+    show("Could not read contract status.");
+  }
 }
 
-function resumeProtocol(){
-  alert("Connect this action to the deployed GenLayer Sentinel contract.");
+async function loadIncident() {
+  try {
+    const data = await readClient.readContract({
+      address: CONTRACT,
+      functionName: "get_last_incident",
+      args: []
+    });
+
+    document.getElementById("incident").textContent = data;
+  } catch(e) {
+    document.getElementById("incident").textContent = "No incident loaded.";
+  }
 }
+
+async function reportExploit() {
+  const url = document.getElementById("url").value.trim();
+
+  if (!url) {
+    show("Enter an evidence URL.");
+    return;
+  }
+
+  try {
+    show("Connecting wallet...");
+    await connectWallet();
+
+    const write = {
+      address: CONTRACT,
+      functionName: "report_exploit",
+      args: [url]
+    };
+
+    show("Preparing GenLayer transaction...");
+
+    const fees = await writeClient.estimateTransactionFeesForWrite(write);
+
+    show("Waiting for decentralized judgment...");
+
+    const tx = await writeClient.writeContract({
+      ...write,
+      fees: {
+        distribution: fees.distribution,
+        feeValue: fees.feeValue
+      }
+    });
+
+    await writeClient.waitForDecision({ hash: tx });
+
+    await loadStatus();
+    await loadIncident();
+
+    show("Decision received.");
+  } catch(e) {
+    show(e.message || "Transaction failed.");
+  }
+}
+
+async function resumeProtocol() {
+  try {
+    show("Connecting wallet...");
+    await connectWallet();
+
+    const write = {
+      address: CONTRACT,
+      functionName: "resume_protocol",
+      args: []
+    };
+
+    const fees = await writeClient.estimateTransactionFeesForWrite(write);
+
+    show("Submitting resume transaction...");
+
+    const tx = await writeClient.writeContract({
+      ...write,
+      fees: {
+        distribution: fees.distribution,
+        feeValue: fees.feeValue
+      }
+    });
+
+    await writeClient.waitForDecision({ hash: tx });
+
+    await loadStatus();
+
+    show("Protocol resumed.");
+  } catch(e) {
+    show(e.message || "Transaction failed.");
+  }
+}
+
+function setStatus(paused) {
+  const el = document.getElementById("status");
+
+  if (paused) {
+    el.textContent = "PAUSED";
+    el.className = "value paused";
+  } else {
+    el.textContent = "ACTIVE";
+    el.className = "value active";
+  }
+}
+
+function show(text) {
+  document.getElementById("message").textContent = text;
+}
+
+window.reportExploit = reportExploit;
+window.resumeProtocol = resumeProtocol;
+window.loadIncident = loadIncident;
+
+init();
 </script>
 
 </body>
