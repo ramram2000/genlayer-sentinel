@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sentinel — Intelligent Emergency Halt</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#080a0f;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -33,6 +34,7 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 </head>
 
 <body>
+
 <div class="container">
 
 <header>
@@ -81,10 +83,16 @@ import { studionet } from "https://esm.sh/genlayer-js/chains";
 const CONTRACT =
 "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
 
-let readClient;
-let writeClient;
-let account;
+let readClient = null;
+let writeClient = null;
+let walletProvider = null;
+let account = null;
 let busy = false;
+
+
+/* -----------------------------
+   UI
+----------------------------- */
 
 const statusEl =
 document.getElementById("status");
@@ -104,86 +112,208 @@ document.getElementById("resumeButton");
 const incidentButton =
 document.getElementById("incidentButton");
 
+
 function show(text) {
   messageEl.textContent = text;
 }
 
+
 function setStatus(paused) {
-  statusEl.textContent = paused ? "PAUSED" : "ACTIVE";
+
+  statusEl.textContent =
+    paused ? "PAUSED" : "ACTIVE";
+
   statusEl.className =
-    paused ? "value paused" : "value active";
+    paused
+      ? "value paused"
+      : "value active";
 }
 
-async function init() {
-  try {
-    readClient = createClient({
-      chain: studionet
-    });
 
-    await loadStatus();
-    await loadIncident();
+/* -----------------------------
+   RABBY EIP-6963 PROVIDER
+----------------------------- */
 
-  } catch (e) {
-    console.error("INIT:", e);
-    show("Unable to connect to GenLayer.");
-  }
+async function getRabbyProvider() {
+
+  return new Promise((resolve) => {
+
+    let found = false;
+
+    function handler(event) {
+
+      const detail = event.detail;
+
+      if (!detail || !detail.info) {
+        return;
+      }
+
+      console.log(
+        "Wallet detected:",
+        detail.info.name,
+        detail.info.rdns
+      );
+
+      if (
+        detail.info.rdns === "io.rabby"
+      ) {
+
+        found = true;
+
+        window.removeEventListener(
+          "eip6963:announceProvider",
+          handler
+        );
+
+        resolve(detail.provider);
+      }
+    }
+
+    window.addEventListener(
+      "eip6963:announceProvider",
+      handler
+    );
+
+    window.dispatchEvent(
+      new Event("eip6963:requestProvider")
+    );
+
+    setTimeout(() => {
+
+      if (!found) {
+
+        window.removeEventListener(
+          "eip6963:announceProvider",
+          handler
+        );
+
+        if (window.ethereum) {
+          resolve(window.ethereum);
+        } else {
+          resolve(null);
+        }
+      }
+
+    }, 1200);
+
+  });
 }
+
+
+/* -----------------------------
+   CONNECT RABBY
+----------------------------- */
 
 async function connectWallet() {
 
-  if (!window.ethereum) {
-    throw new Error("Rabby wallet not found.");
+  walletProvider =
+    await getRabbyProvider();
+
+  if (!walletProvider) {
+    throw new Error(
+      "Rabby wallet was not detected."
+    );
   }
 
   const accounts =
-    await window.ethereum.request({
-      method: "eth_accounts"
+    await walletProvider.request({
+      method: "eth_requestAccounts"
     });
 
-  if (!accounts || !accounts.length) {
-    throw new Error("Connect Rabby first.");
+  if (
+    !accounts ||
+    accounts.length === 0
+  ) {
+    throw new Error(
+      "No Rabby account connected."
+    );
   }
 
   account = accounts[0];
 
-  const chainId =
-    await window.ethereum.request({
-      method: "eth_chainId"
+  console.log(
+    "Rabby account:",
+    account
+  );
+
+
+  writeClient =
+    createClient({
+
+      chain: studionet,
+
+      account: account,
+
+      provider: walletProvider
+
     });
 
-  console.log("Wallet:", account);
-  console.log("Chain:", chainId);
 
-  if (chainId.toLowerCase() !== "0xf22f") {
+  await writeClient.connect(
+    "studionet"
+  );
 
-    show("Switching to GenLayer StudioNet...");
-
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0xf22f" }]
-    });
-  }
-
-  writeClient = createClient({
-    chain: studionet,
-    account: account,
-    provider: window.ethereum
-  });
 
   return writeClient;
 }
+
+
+/* -----------------------------
+   INITIALIZE
+----------------------------- */
+
+async function init() {
+
+  try {
+
+    readClient =
+      createClient({
+        chain: studionet
+      });
+
+    await loadStatus();
+
+    await loadIncident();
+
+  } catch (error) {
+
+    console.error(
+      "INIT ERROR:",
+      error
+    );
+
+    show(
+      "Unable to connect to GenLayer."
+    );
+  }
+}
+
+
+/* -----------------------------
+   READ STATUS
+----------------------------- */
 
 async function loadStatus() {
 
   const paused =
     await readClient.readContract({
+
       address: CONTRACT,
-      functionName: "get_status",
+
+      functionName:
+        "get_status",
+
       args: []
+
     });
 
   setStatus(paused);
 }
+
+
+/* -----------------------------
+   READ INCIDENT
+----------------------------- */
 
 async function loadIncident() {
 
@@ -191,84 +321,150 @@ async function loadIncident() {
 
     const data =
       await readClient.readContract({
+
         address: CONTRACT,
-        functionName: "get_last_incident",
+
+        functionName:
+          "get_last_incident",
+
         args: []
+
       });
 
-    incidentEl.textContent = data;
+    incidentEl.textContent =
+      data;
 
-  } catch (e) {
+  } catch (error) {
 
-    console.error("INCIDENT:", e);
+    console.error(
+      "INCIDENT ERROR:",
+      error
+    );
 
     incidentEl.textContent =
       "No incident loaded.";
   }
 }
 
+
+/* -----------------------------
+   REPORT EXPLOIT
+----------------------------- */
+
 async function reportExploit() {
 
   if (busy) return;
 
   busy = true;
+
   reportButton.disabled = true;
   resumeButton.disabled = true;
 
   try {
 
     const url =
-      document.getElementById("url")
-      .value
-      .trim();
+      document
+        .getElementById("url")
+        .value
+        .trim();
+
 
     if (!url) {
-      throw new Error("Enter an evidence URL.");
+
+      throw new Error(
+        "Enter an evidence URL."
+      );
     }
 
-    show("Connecting wallet...");
+
+    show(
+      "Connecting to Rabby..."
+    );
+
 
     await connectWallet();
 
+
+    show(
+      "Preparing GenLayer transaction..."
+    );
+
+
     const write = {
+
       address: CONTRACT,
-      functionName: "report_exploit",
+
+      functionName:
+        "report_exploit",
+
       args: [url]
+
     };
 
-    show("Estimating GenLayer fees...");
 
     const estimate =
       await writeClient
-      .estimateTransactionFeesForWrite(write);
+        .estimateTransactionFeesForWrite(
+          write
+        );
 
-    console.log("ESTIMATE:", estimate);
 
-    show("Please confirm the transaction in Rabby...");
+    console.log(
+      "Fee estimate:",
+      estimate
+    );
+
+
+    show(
+      "Please confirm the transaction in Rabby..."
+    );
+
 
     const txId =
       await writeClient.writeContract({
+
         ...write,
+
         fees: {
+
           distribution:
             estimate.distribution,
+
           feeValue:
             estimate.feeValue
+
         }
+
       });
 
-    console.log("TX:", txId);
 
-    show("Waiting for decentralized judgment...");
+    console.log(
+      "Transaction:",
+      txId
+    );
+
+
+    show(
+      "Waiting for decentralized judgment..."
+    );
+
 
     await writeClient.waitForDecision({
+
       hash: txId
+
     });
 
+
     await loadStatus();
+
     await loadIncident();
 
-    show("Decision received.");
+
+    show(
+      "Decision received."
+    );
+
 
   } catch (error) {
 
@@ -277,76 +473,107 @@ async function reportExploit() {
       error
     );
 
-    let text;
-
-    try {
-      text =
-        JSON.stringify(
-          error,
-          Object.getOwnPropertyNames(error),
-          2
-        );
-    } catch (_) {
-      text = String(error);
-    }
-
-    show(text);
+    show(
+      error?.message ||
+      String(error)
+    );
 
   } finally {
 
     busy = false;
+
     reportButton.disabled = false;
     resumeButton.disabled = false;
   }
 }
+
+
+/* -----------------------------
+   RESUME
+----------------------------- */
 
 async function resumeProtocol() {
 
   if (busy) return;
 
   busy = true;
-  resumeButton.disabled = true;
+
   reportButton.disabled = true;
+  resumeButton.disabled = true;
 
   try {
 
+    show(
+      "Connecting to Rabby..."
+    );
+
+
     await connectWallet();
 
+
     const write = {
+
       address: CONTRACT,
-      functionName: "resume_protocol",
+
+      functionName:
+        "resume_protocol",
+
       args: []
+
     };
 
-    show("Estimating GenLayer fees...");
 
     const estimate =
       await writeClient
-      .estimateTransactionFeesForWrite(write);
+        .estimateTransactionFeesForWrite(
+          write
+        );
 
-    show("Please confirm the transaction in Rabby...");
+
+    show(
+      "Please confirm the transaction in Rabby..."
+    );
+
 
     const txId =
       await writeClient.writeContract({
+
         ...write,
+
         fees: {
+
           distribution:
             estimate.distribution,
+
           feeValue:
             estimate.feeValue
+
         }
+
       });
 
-    show("Waiting for transaction...");
+
+    show(
+      "Waiting for transaction..."
+    );
+
 
     await writeClient.waitForDecision({
+
       hash: txId
+
     });
 
+
     await loadStatus();
+
     await loadIncident();
 
-    show("Protocol resumed.");
+
+    show(
+      "Protocol resumed."
+    );
+
 
   } catch (error) {
 
@@ -355,28 +582,24 @@ async function resumeProtocol() {
       error
     );
 
-    let text;
-
-    try {
-      text =
-        JSON.stringify(
-          error,
-          Object.getOwnPropertyNames(error),
-          2
-        );
-    } catch (_) {
-      text = String(error);
-    }
-
-    show(text);
+    show(
+      error?.message ||
+      String(error)
+    );
 
   } finally {
 
     busy = false;
-    resumeButton.disabled = false;
+
     reportButton.disabled = false;
+    resumeButton.disabled = false;
   }
 }
+
+
+/* -----------------------------
+   BUTTONS
+----------------------------- */
 
 reportButton.addEventListener(
   "click",
@@ -392,6 +615,11 @@ incidentButton.addEventListener(
   "click",
   loadIncident
 );
+
+
+/* -----------------------------
+   START
+----------------------------- */
 
 init();
 
