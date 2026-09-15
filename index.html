@@ -1,223 +1,73 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sentinel — Intelligent Emergency Halt</title>
-
 <style>
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:#080a0f;
-  color:#f5f7fa;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
-}
-
-.container{
-  max-width:900px;
-  margin:auto;
-  padding:45px 22px
-}
-
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:70px
-}
-
-.logo{
-  font-size:22px;
-  font-weight:800
-}
-
-.badge{
-  border:1px solid #29313d;
-  border-radius:30px;
-  padding:8px 13px;
-  color:#929dab;
-  font-size:11px
-}
-
-.hero{
-  text-align:center
-}
-
-.hero h1{
-  font-size:52px;
-  line-height:1.05;
-  letter-spacing:-2px;
-  margin:0 0 18px
-}
-
-.hero p{
-  color:#929dab;
-  font-size:16px;
-  line-height:1.7;
-  max-width:620px;
-  margin:auto
-}
-
-.status{
-  margin:42px auto 22px;
-  padding:25px;
-  max-width:600px;
-  background:#0d1118;
-  border:1px solid #29313d;
-  border-radius:18px
-}
-
-.label{
-  font-size:11px;
-  color:#778291;
-  letter-spacing:1.5px
-}
-
-.value{
-  font-size:30px;
-  font-weight:800;
-  margin-top:8px
-}
-
-.active{
-  color:#6ee7a0
-}
-
-.paused{
-  color:#ff7070
-}
-
-.card{
-  background:#0d1118;
-  border:1px solid #29313d;
-  border-radius:18px;
-  padding:26px;
-  margin-top:20px
-}
-
-.card h2{
-  font-size:17px;
-  margin:0 0 18px
-}
-
-input{
-  width:100%;
-  padding:14px;
-  border-radius:9px;
-  border:1px solid #303a48;
-  background:#080a0f;
-  color:white;
-  font-size:14px
-}
-
-button{
-  width:100%;
-  padding:14px;
-  margin-top:13px;
-  border:0;
-  border-radius:9px;
-  background:#f5f7fa;
-  color:#080a0f;
-  font-weight:800;
-  cursor:pointer
-}
-
-.secondary{
-  background:#171d26;
-  color:#f5f7fa
-}
-
-pre{
-  white-space:pre-wrap;
-  color:#aeb7c3;
-  font-size:13px;
-  line-height:1.6
-}
-
-#message{
-  text-align:center;
-  color:#929dab;
-  font-size:13px;
-  margin-top:15px
-}
-
-footer{
-  text-align:center;
-  color:#596474;
-  font-size:12px;
-  margin-top:50px
-}
+body{margin:0;background:#080a0f;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.container{max-width:900px;margin:auto;padding:45px 22px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:70px}
+.logo{font-size:22px;font-weight:800}
+.badge{border:1px solid #29313d;border-radius:30px;padding:8px 13px;color:#929dab;font-size:11px}
+.hero{text-align:center}
+.hero h1{font-size:52px;line-height:1.05;letter-spacing:-2px;margin:0 0 18px}
+.hero p{color:#929dab;font-size:16px;line-height:1.7;max-width:620px;margin:auto}
+.status{margin:42px auto 22px;padding:25px;max-width:600px;background:#0d1118;border:1px solid #29313d;border-radius:18px}
+.label{font-size:11px;color:#778291;letter-spacing:1.5px}
+.value{font-size:30px;font-weight:800;margin-top:8px}
+.active{color:#6ee7a0}.paused{color:#ff7070}
+.card{background:#0d1118;border:1px solid #29313d;border-radius:18px;padding:26px;margin-top:20px}
+.card h2{font-size:17px;margin:0 0 18px}
+input{width:100%;padding:14px;border-radius:9px;border:1px solid #303a48;background:#080a0f;color:white;font-size:14px}
+button{width:100%;padding:14px;margin-top:13px;border:0;border-radius:9px;background:#f5f7fa;color:#080a0f;font-weight:800;cursor:pointer}
+.secondary{background:#171d26;color:#f5f7fa}
+pre{white-space:pre-wrap;color:#aeb7c3;font-size:13px;line-height:1.6}
+#message{text-align:center;color:#929dab;font-size:13px;margin-top:15px}
+footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <header>
-  <div class="logo">◈ SENTINEL</div>
-  <div class="badge">GENLAYER · AUTONOMOUS SECURITY</div>
+<div class="logo">◈ SENTINEL</div>
+<div class="badge">GENLAYER · AUTONOMOUS SECURITY</div>
 </header>
 
 <section class="hero">
-  <h1>Intelligent Emergency Halt</h1>
-
-  <p>
-    An autonomous security sentinel that detects credible active exploits
-    and pauses vulnerable protocols before damage spreads.
-  </p>
+<h1>Intelligent Emergency Halt</h1>
+<p>An autonomous security sentinel that detects credible active exploits and pauses vulnerable protocols before damage spreads.</p>
 </section>
 
 <div class="status">
-  <div class="label">PROTOCOL STATUS</div>
-  <div id="status" class="value active">CONNECTING...</div>
+<div class="label">PROTOCOL STATUS</div>
+<div id="status" class="value active">CONNECTING...</div>
 </div>
 
 <div class="card">
-  <h2>Report Security Evidence</h2>
-
-  <input
-    id="url"
-    placeholder="Enter public security evidence URL"
-  >
-
-  <button onclick="reportExploit()">
-    Investigate &amp; Protect
-  </button>
+<h2>Report Security Evidence</h2>
+<input id="url" placeholder="Enter public security evidence URL">
+<button id="reportButton" onclick="reportExploit()">Investigate &amp; Protect</button>
 </div>
 
 <div class="card">
-  <h2>Latest Incident</h2>
-
-  <pre id="incident">Loading...</pre>
-
-  <button
-    class="secondary"
-    onclick="loadIncident()"
-  >
-    Refresh Incident
-  </button>
+<h2>Latest Incident</h2>
+<pre id="incident">Loading...</pre>
+<button class="secondary" onclick="loadIncident()">Refresh Incident</button>
 </div>
 
 <div class="card">
-  <h2>Protocol Control</h2>
-
-  <button
-    class="secondary"
-    onclick="resumeProtocol()"
-  >
-    Resume Protocol
-  </button>
+<h2>Protocol Control</h2>
+<button class="secondary" onclick="resumeProtocol()">Resume Protocol</button>
 </div>
 
 <div id="message"></div>
 
-<footer>
-  Sentinel · Powered by GenLayer Intelligent Contracts
-</footer>
-
+<footer>Sentinel · Powered by GenLayer Intelligent Contracts</footer>
 </div>
 
 <script type="module">
@@ -225,22 +75,31 @@ footer{
 import { createClient } from "https://esm.sh/genlayer-js";
 import { studionet } from "https://esm.sh/genlayer-js/chains";
 
-const CONTRACT =
-  "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
+const CONTRACT = "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
 
 let readClient = null;
 let writeClient = null;
 let account = null;
+let busy = false;
 
+function show(text) {
+  document.getElementById("message").textContent = text;
+}
 
-/* ---------------------------
-   INITIALIZE
----------------------------- */
+function setStatus(paused) {
+  const el = document.getElementById("status");
+
+  if (paused) {
+    el.textContent = "PAUSED";
+    el.className = "value paused";
+  } else {
+    el.textContent = "ACTIVE";
+    el.className = "value active";
+  }
+}
 
 async function init() {
-
   try {
-
     readClient = createClient({
       chain: studionet
     });
@@ -249,80 +108,49 @@ async function init() {
     await loadIncident();
 
   } catch (e) {
-
     console.error(e);
-
-    show(
-      "Unable to connect to GenLayer."
-    );
+    show("Unable to connect to GenLayer.");
   }
 }
-
-
-/* ---------------------------
-   CONNECT RABBY
----------------------------- */
 
 async function connectWallet() {
 
   if (!window.ethereum) {
-    throw new Error(
-      "Rabby wallet not found."
-    );
+    throw new Error("Rabby wallet not found.");
   }
 
-  const accounts =
-    await window.ethereum.request({
-      method: "eth_requestAccounts"
-    });
+  show("Connecting wallet...");
 
-  if (
-    !accounts ||
-    accounts.length === 0
-  ) {
-    throw new Error(
-      "No wallet account connected."
-    );
+  const accounts = await window.ethereum.request({
+    method: "eth_requestAccounts"
+  });
+
+  if (!accounts || accounts.length === 0) {
+    throw new Error("No wallet account connected.");
   }
 
   account = accounts[0];
 
   writeClient = createClient({
-
     chain: studionet,
-
     account: account,
-
     provider: window.ethereum
-
   });
 
-  await writeClient.connect(
-    "studionet"
-  );
+  await writeClient.connect("studionet");
 
   return writeClient;
 }
-
-
-/* ---------------------------
-   READ STATUS
----------------------------- */
 
 async function loadStatus() {
 
   try {
 
-    const paused =
-      await readClient.readContract({
-
-        address: CONTRACT,
-
-        functionName: "get_status",
-
-        args: []
-
-      });
+    const paused = await readClient.readContract({
+      address: CONTRACT,
+      functionName: "get_status",
+      args: []
+    });
 
     setStatus(paused);
 
@@ -330,359 +158,212 @@ async function loadStatus() {
 
     console.error(e);
 
-    show(
-      "Could not read contract status."
-    );
+    document.getElementById("status").textContent = "ERROR";
   }
 }
-
-
-/* ---------------------------
-   READ INCIDENT
----------------------------- */
 
 async function loadIncident() {
 
   try {
 
-    const data =
-      await readClient.readContract({
+    const data = await readClient.readContract({
+      address: CONTRACT,
+      functionName: "get_last_incident",
+      args: []
+    });
 
-        address: CONTRACT,
-
-        functionName: "get_last_incident",
-
-        args: []
-
-      });
-
-    document.getElementById(
-      "incident"
-    ).textContent = data;
+    document.getElementById("incident").textContent = data;
 
   } catch (e) {
 
     console.error(e);
 
-    document.getElementById(
-      "incident"
-    ).textContent =
-      "No incident loaded.";
+    document.getElementById("incident").textContent = "No incident loaded.";
   }
 }
-
-
-/* ---------------------------
-   REPORT EXPLOIT
----------------------------- */
 
 async function reportExploit() {
 
-  const url =
-    document
-      .getElementById("url")
-      .value
-      .trim();
+  if (busy) return;
 
-  if (!url) {
+  busy = true;
 
-    show(
-      "Enter an evidence URL."
-    );
-
-    return;
-  }
+  const button = document.getElementById("reportButton");
+  button.disabled = true;
 
   try {
 
-    show(
-      "Connecting wallet..."
-    );
+    const url = document.getElementById("url").value.trim();
+
+    if (!url) {
+      throw new Error("Enter an evidence URL.");
+    }
 
     await connectWallet();
 
+    show("Preparing GenLayer transaction...");
 
     const write = {
-
       address: CONTRACT,
-
-      functionName:
-        "report_exploit",
-
+      functionName: "report_exploit",
       args: [url]
-
     };
 
+    console.log("ACCOUNT:", account);
+    console.log("WRITE:", write);
 
-    show(
-      "Preparing transaction..."
-    );
+    let fees;
 
+    try {
 
-    const fees =
-      await writeClient
-        .estimateTransactionFeesForWrite(
-          write
-        );
-
-
-    show(
-      "Please confirm the transaction in Rabby..."
-    );
-
-
-    const tx =
-      await writeClient.writeContract({
-
+      fees = await writeClient.estimateTransactionFeesForWrite({
         ...write,
-
-        fees: {
-
-          distribution:
-            fees.distribution,
-
-          feeValue:
-            fees.feeValue
-
-        }
-
+        account: account
       });
 
+    } catch (e) {
 
-    console.log(
-      "GenLayer transaction:",
-      tx
-    );
+      console.error("FEE ERROR:", e);
 
+      throw new Error(
+        "Fee estimation failed: " +
+        (e?.message || String(e))
+      );
+    }
 
-    show(
-      "Waiting for decentralized judgment..."
-    );
+    console.log("FEES:", fees);
 
+    show("Please confirm the transaction in Rabby...");
+
+    let tx;
+
+    try {
+
+      tx = await writeClient.writeContract({
+        ...write,
+        account: account,
+        fees: {
+          distribution: fees.distribution,
+          feeValue: fees.feeValue
+        }
+      });
+
+    } catch (e) {
+
+      console.error("WRITE ERROR:", e);
+
+      throw new Error(
+        "Transaction failed: " +
+        (e?.message || String(e))
+      );
+    }
+
+    console.log("TX:", tx);
+
+    show("Waiting for decentralized judgment...");
 
     await writeClient.waitForDecision({
       hash: tx
     });
 
-
     await loadStatus();
-
     await loadIncident();
 
-
-    show(
-      "Decision received."
-    );
-
+    show("Decision received.");
 
   } catch (e) {
 
-    console.error(
-      "REPORT ERROR:",
-      e
-    );
+    console.error("REPORT ERROR:", e);
 
-    show(
-      e?.message ||
-      "Transaction failed."
-    );
+    show(e?.message || "Transaction failed.");
+
+  } finally {
+
+    busy = false;
+    button.disabled = false;
   }
 }
-
-
-/* ---------------------------
-   RESUME PROTOCOL
----------------------------- */
 
 async function resumeProtocol() {
 
-  try {
+  if (busy) return;
 
-    show(
-      "Connecting wallet..."
-    );
+  busy = true;
+
+  try {
 
     await connectWallet();
 
+    show("Preparing resume transaction...");
 
     const write = {
-
       address: CONTRACT,
-
-      functionName:
-        "resume_protocol",
-
+      functionName: "resume_protocol",
       args: []
-
     };
 
-
-    show(
-      "Preparing transaction..."
-    );
-
-
     const fees =
-      await writeClient
-        .estimateTransactionFeesForWrite(
-          write
-        );
+      await writeClient.estimateTransactionFeesForWrite({
+        ...write,
+        account: account
+      });
 
-
-    show(
-      "Please confirm the transaction in Rabby..."
-    );
-
+    show("Please confirm the transaction in Rabby...");
 
     const tx =
       await writeClient.writeContract({
-
         ...write,
-
+        account: account,
         fees: {
-
-          distribution:
-            fees.distribution,
-
-          feeValue:
-            fees.feeValue
-
+          distribution: fees.distribution,
+          feeValue: fees.feeValue
         }
-
       });
 
-
-    console.log(
-      "GenLayer transaction:",
-      tx
-    );
-
-
-    show(
-      "Waiting for transaction..."
-    );
-
+    show("Waiting for transaction...");
 
     await writeClient.waitForDecision({
       hash: tx
     });
 
-
     await loadStatus();
-
     await loadIncident();
 
-
-    show(
-      "Protocol resumed."
-    );
-
+    show("Protocol resumed.");
 
   } catch (e) {
 
-    console.error(
-      "RESUME ERROR:",
-      e
-    );
+    console.error("RESUME ERROR:", e);
 
-    show(
-      e?.message ||
-      "Transaction failed."
-    );
+    show(e?.message || "Transaction failed.");
+
+  } finally {
+
+    busy = false;
   }
 }
 
-
-/* ---------------------------
-   STATUS UI
----------------------------- */
-
-function setStatus(paused) {
-
-  const el =
-    document.getElementById(
-      "status"
-    );
-
-  if (paused) {
-
-    el.textContent =
-      "PAUSED";
-
-    el.className =
-      "value paused";
-
-  } else {
-
-    el.textContent =
-      "ACTIVE";
-
-    el.className =
-      "value active";
-  }
-}
-
-
-/* ---------------------------
-   MESSAGE
----------------------------- */
-
-function show(text) {
-
-  document.getElementById(
-    "message"
-  ).textContent = text;
-}
-
-
-/* ---------------------------
-   WALLET EVENTS
----------------------------- */
+window.reportExploit = reportExploit;
+window.resumeProtocol = resumeProtocol;
+window.loadIncident = loadIncident;
 
 if (window.ethereum) {
 
-  window.ethereum.on(
-    "accountsChanged",
-    async (accounts) => {
+  window.ethereum.on("accountsChanged", accounts => {
 
-      if (
-        accounts &&
-        accounts.length
-      ) {
-
-        account = accounts[0];
-
-      } else {
-
-        account = null;
-        writeClient = null;
-      }
+    if (accounts && accounts.length) {
+      account = accounts[0];
+    } else {
+      account = null;
+      writeClient = null;
     }
-  );
+
+  });
 }
-
-
-/* ---------------------------
-   GLOBAL BUTTON FUNCTIONS
----------------------------- */
-
-window.reportExploit =
-  reportExploit;
-
-window.resumeProtocol =
-  resumeProtocol;
-
-window.loadIncident =
-  loadIncident;
-
-
-/* ---------------------------
-   START
----------------------------- */
 
 init();
 
 </script>
-
 </body>
 </html>
+```
