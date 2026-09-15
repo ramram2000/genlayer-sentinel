@@ -5,32 +5,162 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sentinel — Intelligent Emergency Halt</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#080a0f;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.container{max-width:900px;margin:auto;padding:45px 22px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:70px}
-.logo{font-size:22px;font-weight:800}
-.badge{border:1px solid #29313d;border-radius:30px;padding:8px 13px;color:#929dab;font-size:11px}
-.hero{text-align:center}
-.hero h1{font-size:52px;line-height:1.05;letter-spacing:-2px;margin:0 0 18px}
-.hero p{color:#929dab;font-size:16px;line-height:1.7;max-width:620px;margin:auto}
-.status{margin:42px auto 22px;padding:25px;max-width:600px;background:#0d1118;border:1px solid #29313d;border-radius:18px}
-.label{font-size:11px;color:#778291;letter-spacing:1.5px}
-.value{font-size:30px;font-weight:800;margin-top:8px}
-.active{color:#6ee7a0}.paused{color:#ff7070}
-.card{background:#0d1118;border:1px solid #29313d;border-radius:18px;padding:26px;margin-top:20px}
-.card h2{font-size:17px;margin:0 0 18px}
-input{width:100%;padding:14px;border-radius:9px;border:1px solid #303a48;background:#080a0f;color:white;font-size:14px}
-button{width:100%;padding:14px;margin-top:13px;border:0;border-radius:9px;background:#f5f7fa;color:#080a0f;font-weight:800;cursor:pointer}
-.secondary{background:#171d26;color:#f5f7fa}
-pre{white-space:pre-wrap;color:#aeb7c3;font-size:13px;line-height:1.6}
-#message{text-align:center;color:#929dab;font-size:13px;margin-top:15px}
-footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
+
+body{
+  margin:0;
+  background:#080a0f;
+  color:#f5f7fa;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:45px 22px
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:70px
+}
+
+.logo{
+  font-size:22px;
+  font-weight:800
+}
+
+.badge{
+  border:1px solid #29313d;
+  border-radius:30px;
+  padding:8px 13px;
+  color:#929dab;
+  font-size:11px
+}
+
+.hero{
+  text-align:center
+}
+
+.hero h1{
+  font-size:52px;
+  line-height:1.05;
+  letter-spacing:-2px;
+  margin:0 0 18px
+}
+
+.hero p{
+  color:#929dab;
+  font-size:16px;
+  line-height:1.7;
+  max-width:620px;
+  margin:auto
+}
+
+.status{
+  margin:42px auto 22px;
+  padding:25px;
+  max-width:600px;
+  background:#0d1118;
+  border:1px solid #29313d;
+  border-radius:18px
+}
+
+.label{
+  font-size:11px;
+  color:#778291;
+  letter-spacing:1.5px
+}
+
+.value{
+  font-size:30px;
+  font-weight:800;
+  margin-top:8px
+}
+
+.active{
+  color:#6ee7a0
+}
+
+.paused{
+  color:#ff7070
+}
+
+.card{
+  background:#0d1118;
+  border:1px solid #29313d;
+  border-radius:18px;
+  padding:26px;
+  margin-top:20px
+}
+
+.card h2{
+  font-size:17px;
+  margin:0 0 18px
+}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:9px;
+  border:1px solid #303a48;
+  background:#080a0f;
+  color:white;
+  font-size:14px
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:13px;
+  border:0;
+  border-radius:9px;
+  background:#f5f7fa;
+  color:#080a0f;
+  font-weight:800;
+  cursor:pointer
+}
+
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed
+}
+
+.secondary{
+  background:#171d26;
+  color:#f5f7fa
+}
+
+pre{
+  white-space:pre-wrap;
+  color:#aeb7c3;
+  font-size:13px;
+  line-height:1.6
+}
+
+#message{
+  text-align:center;
+  color:#929dab;
+  font-size:13px;
+  margin-top:15px;
+  min-height:20px
+}
+
+footer{
+  text-align:center;
+  color:#596474;
+  font-size:12px;
+  margin-top:50px
+}
 </style>
 </head>
 
 <body>
+
 <div class="container">
 
 <header>
@@ -40,7 +170,11 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 
 <section class="hero">
 <h1>Intelligent Emergency Halt</h1>
-<p>An autonomous security sentinel that detects credible active exploits and pauses vulnerable protocols before damage spreads.</p>
+
+<p>
+An autonomous security sentinel that detects credible active exploits
+and pauses vulnerable protocols before damage spreads.
+</p>
 </section>
 
 <div class="status">
@@ -50,294 +184,592 @@ footer{text-align:center;color:#596474;font-size:12px;margin-top:50px}
 
 <div class="card">
 <h2>Report Security Evidence</h2>
-<input id="url" placeholder="Enter public security evidence URL">
-<button id="reportButton">Investigate &amp; Protect</button>
+
+<input
+  id="url"
+  type="url"
+  placeholder="Enter public security evidence URL"
+>
+
+<button id="reportButton">
+Investigate &amp; Protect
+</button>
 </div>
 
 <div class="card">
 <h2>Latest Incident</h2>
+
 <pre id="incident">Loading...</pre>
-<button class="secondary" id="incidentButton">Refresh Incident</button>
+
+<button
+  id="incidentButton"
+  class="secondary"
+>
+Refresh Incident
+</button>
 </div>
 
 <div class="card">
 <h2>Protocol Control</h2>
-<button class="secondary" id="resumeButton">Resume Protocol</button>
+
+<button
+  id="resumeButton"
+  class="secondary"
+>
+Resume Protocol
+</button>
 </div>
 
 <div id="message"></div>
 
-<footer>Sentinel · Powered by GenLayer Intelligent Contracts</footer>
+<footer>
+Sentinel · Powered by GenLayer Intelligent Contracts
+</footer>
+
 </div>
 
 <script type="module">
 
-import { createClient } from "https://esm.sh/genlayer-js@1.1.8";
-import { studionet } from "https://esm.sh/genlayer-js@1.1.8/chains";
+import {
+  createClient
+} from "https://esm.sh/genlayer-js@1.1.8";
 
-const CONTRACT = "0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
+import {
+  studionet
+} from "https://esm.sh/genlayer-js@1.1.8/chains";
+
+
+const CONTRACT =
+"0x076732DE50F456846Ce8dfFAe33Bb9EcE4Cc7012";
+
 
 let readClient = null;
 let writeClient = null;
 let account = null;
 let busy = false;
 
-const statusEl = document.getElementById("status");
-const messageEl = document.getElementById("message");
-const incidentEl = document.getElementById("incident");
-const reportButton = document.getElementById("reportButton");
-const resumeButton = document.getElementById("resumeButton");
-const incidentButton = document.getElementById("incidentButton");
 
-function show(text) {
-  messageEl.textContent = text;
+const statusElement =
+document.getElementById("status");
+
+const messageElement =
+document.getElementById("message");
+
+const incidentElement =
+document.getElementById("incident");
+
+const reportButton =
+document.getElementById("reportButton");
+
+const resumeButton =
+document.getElementById("resumeButton");
+
+const incidentButton =
+document.getElementById("incidentButton");
+
+
+function show(message){
+
+  messageElement.textContent =
+  message;
+
 }
 
-function setStatus(paused) {
-  if (paused) {
-    statusEl.textContent = "PAUSED";
-    statusEl.className = "value paused";
-  } else {
-    statusEl.textContent = "ACTIVE";
-    statusEl.className = "value active";
+
+function setStatus(paused){
+
+  if(paused){
+
+    statusElement.textContent =
+    "PAUSED";
+
+    statusElement.className =
+    "value paused";
+
+  }else{
+
+    statusElement.textContent =
+    "ACTIVE";
+
+    statusElement.className =
+    "value active";
+
   }
+
 }
 
-async function init() {
-  try {
-    readClient = createClient({
-      chain: studionet
+
+async function init(){
+
+  try{
+
+    readClient =
+    createClient({
+      chain:studionet
     });
 
     await loadStatus();
+
     await loadIncident();
 
-  } catch (e) {
-    console.error(e);
-    show("Unable to connect to GenLayer.");
+  }catch(error){
+
+    console.error(error);
+
+    show(
+      "Unable to connect to GenLayer."
+    );
+
   }
+
 }
 
-async function connectWallet() {
 
-  if (!window.ethereum) {
-    throw new Error("Rabby wallet not found.");
+async function connectWallet(){
+
+  if(!window.ethereum){
+
+    throw new Error(
+      "Rabby wallet not found."
+    );
+
   }
 
-  const accounts = await window.ethereum.request({
-    method: "eth_requestAccounts"
+
+  const accounts =
+  await window.ethereum.request({
+    method:"eth_requestAccounts"
   });
 
-  if (!accounts || !accounts.length) {
-    throw new Error("No wallet account connected.");
+
+  if(
+    !accounts ||
+    accounts.length === 0
+  ){
+
+    throw new Error(
+      "No wallet account connected."
+    );
+
   }
 
-  account = accounts[0];
 
-  writeClient = createClient({
-    chain: studionet,
-    account: account,
-    provider: window.ethereum
+  account =
+  accounts[0];
+
+
+  writeClient =
+  createClient({
+
+    chain:studionet,
+
+    account:account,
+
+    provider:window.ethereum
+
   });
 
-  await writeClient.connect("studionet");
+
+  await writeClient.connect(
+    "studionet"
+  );
+
 
   return writeClient;
+
 }
 
-async function loadStatus() {
 
-  const paused = await readClient.readContract({
-    address: CONTRACT,
-    functionName: "get_status",
-    args: []
+async function loadStatus(){
+
+  const paused =
+  await readClient.readContract({
+
+    address:CONTRACT,
+
+    functionName:"get_status",
+
+    args:[]
+
   });
 
+
   setStatus(paused);
+
 }
 
-async function loadIncident() {
 
-  try {
+async function loadIncident(){
 
-    const data = await readClient.readContract({
-      address: CONTRACT,
-      functionName: "get_last_incident",
-      args: []
+  try{
+
+    const result =
+    await readClient.readContract({
+
+      address:CONTRACT,
+
+      functionName:
+      "get_last_incident",
+
+      args:[]
+
     });
 
-    incidentEl.textContent = data;
 
-  } catch (e) {
+    incidentElement.textContent =
+    result;
 
-    console.error(e);
-    incidentEl.textContent = "No incident loaded.";
+  }catch(error){
+
+    console.error(error);
+
+    incidentElement.textContent =
+    "No incident loaded.";
 
   }
+
 }
 
-async function reportExploit() {
 
-  if (busy) return;
+async function reportExploit(){
 
-  const url = document.getElementById("url").value.trim();
-
-  if (!url) {
-    show("Enter an evidence URL.");
+  if(busy){
     return;
   }
 
+
+  const url =
+  document
+  .getElementById("url")
+  .value
+  .trim();
+
+
+  if(!url){
+
+    show(
+      "Enter an evidence URL."
+    );
+
+    return;
+
+  }
+
+
   busy = true;
+
   reportButton.disabled = true;
 
-  try {
-
-    show("Connecting wallet...");
-
-    await connectWallet();
-
-    show("Estimating transaction fees...");
-
-    const write = {
-      address: CONTRACT,
-      functionName: "report_exploit",
-      args: [url]
-    };
-
-    const fees =
-      await writeClient.estimateTransactionFeesForWrite({
-        ...write,
-        account: account
-      });
-
-    console.log("ACCOUNT:", account);
-    console.log("FEES:", fees);
-
-    show("Please confirm the transaction in Rabby...");
-
-    const tx = await writeClient.writeContract({
-      ...write,
-      account: account,
-      fees: {
-        distribution: fees.distribution,
-        feeValue: fees.feeValue
-      }
-    });
-
-    console.log("TX:", tx);
-
-    show("Waiting for decentralized judgment...");
-
-    await writeClient.waitForDecision({
-      hash: tx
-    });
-
-    await loadStatus();
-    await loadIncident();
-
-    show("Decision received.");
-
-  } catch (e) {
-
-    console.error(e);
-
-    show(
-      e && e.message
-        ? e.message
-        : "Transaction failed."
-    );
-
-  } finally {
-
-    busy = false;
-    reportButton.disabled = false;
-
-  }
-}
-
-async function resumeProtocol() {
-
-  if (busy) return;
-
-  busy = true;
   resumeButton.disabled = true;
 
-  try {
 
-    show("Connecting wallet...");
+  try{
+
+    show(
+      "Connecting wallet..."
+    );
+
 
     await connectWallet();
 
-    const write = {
-      address: CONTRACT,
-      functionName: "resume_protocol",
-      args: []
-    };
-
-    const fees =
-      await writeClient.estimateTransactionFeesForWrite({
-        ...write,
-        account: account
-      });
-
-    show("Please confirm the transaction in Rabby...");
-
-    const tx = await writeClient.writeContract({
-      ...write,
-      account: account,
-      fees: {
-        distribution: fees.distribution,
-        feeValue: fees.feeValue
-      }
-    });
-
-    show("Waiting for transaction...");
-
-    await writeClient.waitForDecision({
-      hash: tx
-    });
-
-    await loadStatus();
-    await loadIncident();
-
-    show("Protocol resumed.");
-
-  } catch (e) {
-
-    console.error(e);
 
     show(
-      e && e.message
-        ? e.message
-        : "Transaction failed."
+      "Preparing GenLayer transaction..."
     );
 
-  } finally {
+
+    const write = {
+
+      address:CONTRACT,
+
+      functionName:
+      "report_exploit",
+
+      args:[url]
+
+    };
+
+
+    const estimate =
+    await writeClient
+    .estimateTransactionFeesForWrite({
+
+      ...write,
+
+      account:account
+
+    });
+
+
+    const fees = {
+
+      distribution:
+      estimate.distribution,
+
+      feeValue:
+      estimate.feeValue,
+
+      ...(estimate.messageAllocations
+        ? {
+            messageAllocations:
+            estimate.messageAllocations
+          }
+        : {})
+
+    };
+
+
+    show(
+      "Please confirm the transaction in Rabby..."
+    );
+
+
+    const tx =
+    await writeClient.writeContract({
+
+      ...write,
+
+      account:account,
+
+      fees:fees
+
+    });
+
+
+    show(
+      "Waiting for decentralized judgment..."
+    );
+
+
+    await writeClient.waitForDecision({
+
+      hash:tx
+
+    });
+
+
+    await loadStatus();
+
+    await loadIncident();
+
+
+    show(
+      "Decision received."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "SENTINEL ERROR:",
+      error
+    );
+
+
+    show(
+      error?.message ||
+      "Transaction failed."
+    );
+
+
+  }finally{
 
     busy = false;
-    resumeButton.disabled = false;
+
+    reportButton.disabled =
+    false;
+
+    resumeButton.disabled =
+    false;
 
   }
+
 }
+
+
+async function resumeProtocol(){
+
+  if(busy){
+    return;
+  }
+
+
+  busy = true;
+
+  resumeButton.disabled = true;
+
+  reportButton.disabled = true;
+
+
+  try{
+
+    show(
+      "Connecting wallet..."
+    );
+
+
+    await connectWallet();
+
+
+    const write = {
+
+      address:CONTRACT,
+
+      functionName:
+      "resume_protocol",
+
+      args:[]
+
+    };
+
+
+    const estimate =
+    await writeClient
+    .estimateTransactionFeesForWrite({
+
+      ...write,
+
+      account:account
+
+    });
+
+
+    const fees = {
+
+      distribution:
+      estimate.distribution,
+
+      feeValue:
+      estimate.feeValue,
+
+      ...(estimate.messageAllocations
+        ? {
+            messageAllocations:
+            estimate.messageAllocations
+          }
+        : {})
+
+    };
+
+
+    show(
+      "Please confirm the transaction in Rabby..."
+    );
+
+
+    const tx =
+    await writeClient.writeContract({
+
+      ...write,
+
+      account:account,
+
+      fees:fees
+
+    });
+
+
+    show(
+      "Waiting for transaction..."
+    );
+
+
+    await writeClient.waitForDecision({
+
+      hash:tx
+
+    });
+
+
+    await loadStatus();
+
+    await loadIncident();
+
+
+    show(
+      "Protocol resumed."
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "RESUME ERROR:",
+      error
+    );
+
+
+    show(
+      error?.message ||
+      "Transaction failed."
+    );
+
+
+  }finally{
+
+    busy = false;
+
+    reportButton.disabled =
+    false;
+
+    resumeButton.disabled =
+    false;
+
+  }
+
+}
+
 
 reportButton.addEventListener(
   "click",
   reportExploit
 );
 
+
 resumeButton.addEventListener(
   "click",
   resumeProtocol
 );
+
 
 incidentButton.addEventListener(
   "click",
   loadIncident
 );
 
+
+if(window.ethereum){
+
+  window.ethereum.on(
+    "accountsChanged",
+    function(accounts){
+
+      if(
+        accounts &&
+        accounts.length
+      ){
+
+        account =
+        accounts[0];
+
+      }else{
+
+        account = null;
+
+        writeClient = null;
+
+      }
+
+    }
+  );
+
+}
+
+
 init();
 
 </script>
+
 </body>
 </html>
 ```
