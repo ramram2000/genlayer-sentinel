@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -318,7 +319,7 @@ footer{
       id="walletButton"
       type="button"
     >
-      Connect MetaMask
+      Connect Wallet
     </button>
 
   </div>
@@ -425,14 +426,6 @@ const CONTRACT =
 
 
 /* =========================================================
-   GENLAYER STUDIONET
-   Chain ID: 61999
-========================================================= */
-
-const STUDIONET_CHAIN_ID = "0xf22f";
-
-
-/* =========================================================
    STATE
 ========================================================= */
 
@@ -531,7 +524,7 @@ function setWalletUI(address){
       "No wallet connected";
 
     walletButton.textContent =
-      "Connect MetaMask";
+      "Connect Wallet";
 
   }
 
@@ -603,7 +596,8 @@ async function initialize(){
 
 
 /* =========================================================
-   CHECK EXISTING METAMASK ACCOUNT
+   CHECK EXISTING WALLET ACCOUNT
+   (runs on page load, does NOT prompt the user)
 ========================================================= */
 
 async function checkExistingWallet(){
@@ -631,6 +625,17 @@ async function checkExistingWallet(){
       account =
         accounts[0];
 
+      writeClient =
+        createClient({
+
+          chain: studionet,
+
+          account: account,
+
+          provider: window.ethereum
+
+        });
+
       setWalletUI(account);
 
     }else{
@@ -656,7 +661,7 @@ async function checkExistingWallet(){
 
 
 /* =========================================================
-   CONNECT METAMASK
+   CONNECT WALLET
 ========================================================= */
 
 async function connectWallet(){
@@ -664,19 +669,20 @@ async function connectWallet(){
   if(!window.ethereum){
 
     throw new Error(
-      "MetaMask is not installed."
+      "No wallet extension detected. Please install MetaMask."
     );
 
   }
 
 
   show(
-    "Connecting MetaMask..."
+    "Connecting wallet..."
   );
 
 
   /*
    * Explicitly request the user's account.
+   * This is what actually opens the wallet popup.
    */
 
   const accounts =
@@ -691,7 +697,7 @@ async function connectWallet(){
   ){
 
     throw new Error(
-      "No MetaMask account was connected."
+      "No account was connected."
     );
 
   }
@@ -702,8 +708,12 @@ async function connectWallet(){
 
 
   /*
-   * Create the GenLayer client
-   * using MetaMask's EIP-1193 provider.
+   * Create the GenLayer write client
+   * using the wallet's EIP-1193 provider.
+   *
+   * No extra "connect" step is needed here -
+   * GenLayerJS opens the signature popup directly
+   * on writeContract().
    */
 
   writeClient =
@@ -718,48 +728,11 @@ async function connectWallet(){
     });
 
 
-  /*
-   * This connects the provider to
-   * the exact Studionet chain used
-   * by the client.
-   */
-
-  show(
-    "Connecting to GenLayer Studionet..."
-  );
-
-
-  await writeClient.connect(
-    "studionet"
-  );
-
-
-  /*
-   * Refresh account after network connection.
-   */
-
-  const refreshedAccounts =
-    await window.ethereum.request({
-      method:"eth_accounts"
-    });
-
-
-  if(
-    refreshedAccounts &&
-    refreshedAccounts.length > 0
-  ){
-
-    account =
-      refreshedAccounts[0];
-
-  }
-
-
   setWalletUI(account);
 
 
   show(
-    "MetaMask connected."
+    "Wallet connected."
   );
 
 
@@ -769,7 +742,7 @@ async function connectWallet(){
 
 
 /* =========================================================
-   DISCONNECT UI
+   DISCONNECT (local UI state only)
 ========================================================= */
 
 function disconnectWallet(){
@@ -778,7 +751,7 @@ function disconnectWallet(){
    * Browser wallets such as MetaMask do not provide
    * a true programmatic disconnect through EIP-1193.
    *
-   * So we clear the site's local connection state.
+   * So we just clear the site's local connection state.
    */
 
   account = null;
@@ -794,7 +767,7 @@ function disconnectWallet(){
 
 
 /* =========================================================
-   WALLET BUTTON
+   WALLET BUTTON (Connect / Disconnect toggle)
 ========================================================= */
 
 async function handleWalletButton(){
@@ -922,96 +895,24 @@ async function loadIncident(){
 
 /* =========================================================
    ENSURE WALLET
+   Makes sure we have a connected writeClient before
+   a write action. Prompts to connect if needed.
 ========================================================= */
 
 async function ensureWallet(){
 
-  if(
-    !window.ethereum
-  ){
+  if(!window.ethereum){
 
     throw new Error(
-      "MetaMask is not installed."
+      "No wallet extension detected. Please install MetaMask."
     );
 
   }
 
 
-  /*
-   * Always check the actual wallet account.
-   */
-
-  const accounts =
-    await window.ethereum.request({
-      method:"eth_accounts"
-    });
-
-
-  if(
-    !accounts ||
-    accounts.length === 0
-  ){
+  if(!account || !writeClient){
 
     await connectWallet();
-
-  }else{
-
-    account =
-      accounts[0];
-
-    /*
-     * Rebuild the write client if needed.
-     */
-
-    writeClient =
-      createClient({
-
-        chain: studionet,
-
-        account: account,
-
-        provider: window.ethereum
-
-      });
-
-
-    /*
-     * Make sure the wallet is on Studionet.
-     */
-
-    await writeClient.connect(
-      "studionet"
-    );
-
-
-    /*
-     * Verify the account again after
-     * the network switch.
-     */
-
-    const finalAccounts =
-      await window.ethereum.request({
-        method:"eth_accounts"
-      });
-
-
-    if(
-      !finalAccounts ||
-      finalAccounts.length === 0
-    ){
-
-      throw new Error(
-        "MetaMask account is no longer connected."
-      );
-
-    }
-
-
-    account =
-      finalAccounts[0];
-
-
-    setWalletUI(account);
 
   }
 
@@ -1055,81 +956,35 @@ async function reportExploit(){
 
 
     /*
-     * First establish MetaMask connection.
+     * Make sure the wallet is connected.
      */
 
     await ensureWallet();
 
 
     /*
-     * Build the exact GenLayer write.
-     */
-
-    const write = {
-
-      address: CONTRACT,
-
-      functionName:
-        "report_exploit",
-
-      args: [
-        evidenceUrl
-      ]
-
-    };
-
-
-    /*
-     * Fee simulation.
-     *
-     * This is the official GenLayerJS
-     * development/profiling helper.
+     * This is where the wallet should open
+     * its transaction/signature confirmation.
      */
 
     show(
-      "Estimating transaction fees..."
-    );
-
-
-    const estimate =
-      await writeClient
-        .estimateTransactionFeesForWrite(
-          write
-        );
-
-
-    console.log(
-      "GENLAYER FEE ESTIMATE:",
-      estimate
-    );
-
-
-    /*
-     * IMPORTANT:
-     *
-     * This is where MetaMask should open
-     * its transaction/sign confirmation.
-     */
-
-    show(
-      "Confirm the transaction in MetaMask..."
+      "Confirm the transaction in your wallet..."
     );
 
 
     const txId =
       await writeClient.writeContract({
 
-        ...write,
+        address: CONTRACT,
 
-        fees: {
+        functionName:
+          "report_exploit",
 
-          distribution:
-            estimate.distribution,
+        args: [
+          evidenceUrl
+        ],
 
-          feeValue:
-            estimate.feeValue
-
-        }
+        value: 0n
 
       });
 
@@ -1223,49 +1078,22 @@ async function resumeProtocol(){
     await ensureWallet();
 
 
-    const write = {
-
-      address: CONTRACT,
-
-      functionName:
-        "resume_protocol",
-
-      args: []
-
-    };
-
-
     show(
-      "Estimating transaction fees..."
-    );
-
-
-    const estimate =
-      await writeClient
-        .estimateTransactionFeesForWrite(
-          write
-        );
-
-
-    show(
-      "Confirm the transaction in MetaMask..."
+      "Confirm the transaction in your wallet..."
     );
 
 
     const txId =
       await writeClient.writeContract({
 
-        ...write,
+        address: CONTRACT,
 
-        fees: {
+        functionName:
+          "resume_protocol",
 
-          distribution:
-            estimate.distribution,
+        args: [],
 
-          feeValue:
-            estimate.feeValue
-
-        }
+        value: 0n
 
       });
 
@@ -1331,7 +1159,7 @@ async function resumeProtocol(){
 
 
 /* =========================================================
-   METAMASK ACCOUNT CHANGE
+   WALLET ACCOUNT / NETWORK CHANGE LISTENERS
 ========================================================= */
 
 if(window.ethereum){
@@ -1348,12 +1176,21 @@ if(window.ethereum){
         account =
           accounts[0];
 
-        writeClient = null;
+        writeClient =
+          createClient({
+
+            chain: studionet,
+
+            account: account,
+
+            provider: window.ethereum
+
+          });
 
         setWalletUI(account);
 
         show(
-          "MetaMask account changed."
+          "Wallet account changed."
         );
 
       }else{
