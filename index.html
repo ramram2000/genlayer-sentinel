@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -238,7 +237,6 @@ footer{
 
 }
 </style>
-
 </head>
 
 <body>
@@ -263,9 +261,7 @@ footer{
 
 <div class="status">
 
-  <div class="label">
-    PROTOCOL STATUS
-  </div>
+  <div class="label">PROTOCOL STATUS</div>
 
   <div id="status" class="value active">
     CONNECTING...
@@ -277,29 +273,22 @@ footer{
 
   <div class="wallet-row">
 
-```
-<div>
+    <div>
 
-  <div class="wallet-status">
+      <div class="wallet-status">
+        <span id="walletDot" class="dot"></span>
+        <span id="walletStatus">Wallet Disconnected</span>
+      </div>
 
-    <span id="walletDot" class="dot"></span>
+      <div id="walletAddress" class="wallet-address">
+        No wallet connected
+      </div>
 
-    <span id="walletStatus">
-      Wallet Disconnected
-    </span>
+    </div>
 
-  </div>
-
-  <div id="walletAddress" class="wallet-address">
-    No wallet connected
-  </div>
-
-</div>
-
-<button id="walletButton" type="button">
-  Connect Wallet
-</button>
-```
+    <button id="walletButton" type="button">
+      Connect Wallet
+    </button>
 
   </div>
 
@@ -313,13 +302,12 @@ footer{
 
   <h2>Report Security Evidence</h2>
 
-<input
-id="url"
-type="url"
-placeholder="Enter public security evidence URL"
-value="https://onchainattack.org/document/examples/2026-09-symbiosis-bridgev2-message-validation-unbacked-sybtc-mint/"
-
->
+  <input
+    id="url"
+    type="url"
+    placeholder="Enter public security evidence URL"
+    value="https://onchainattack.org/document/examples/2026-09-symbiosis-bridgev2-message-validation-unbacked-sybtc-mint/"
+  >
 
   <button id="reportButton" type="button">
     Investigate &amp; Protect
@@ -359,13 +347,8 @@ value="https://onchainattack.org/document/examples/2026-09-symbiosis-bridgev2-me
 
 <script type="module">
 
-import {
-  createClient
-} from "https://esm.sh/genlayer-js@1.1.8";
-
-import {
-  studionet
-} from "https://esm.sh/genlayer-js@1.1.8/chains";
+import { createClient } from "https://esm.sh/genlayer-js@1.1.8";
+import { studionet } from "https://esm.sh/genlayer-js@1.1.8/chains";
 
 
 /* =========================================================
@@ -426,10 +409,7 @@ const walletDot =
 ========================================================= */
 
 function show(message){
-
-  messageElement.textContent =
-    message || "";
-
+  messageElement.textContent = message || "";
 }
 
 
@@ -439,16 +419,13 @@ function show(message){
 
 function shortAddress(address){
 
-  if(!address){
-    return "";
-  }
+  if(!address) return "";
 
   return (
     address.slice(0,6) +
     "..." +
     address.slice(-4)
   );
-
 }
 
 
@@ -483,9 +460,7 @@ function setWalletUI(address){
 
     walletButton.textContent =
       "Connect Wallet";
-
   }
-
 }
 
 
@@ -497,22 +472,608 @@ function setStatus(paused){
 
   if(paused){
 
-    statusElement.textContent =
-      "PAUSED";
-
-    statusElement.className =
-      "value paused";
+    statusElement.textContent = "PAUSED";
+    statusElement.className = "value paused";
 
   }else{
 
-    statusElement.textContent =
-      "ACTIVE";
+    statusElement.textContent = "ACTIVE";
+    statusElement.className = "value active";
+  }
+}
 
-    statusElement.className =
-      "value active";
 
+/* =========================================================
+   READ CLIENT
+========================================================= */
+
+function createReadClient(){
+
+  readClient = createClient({
+    chain: studionet
+  });
+
+}
+
+
+/* =========================================================
+   LOAD STATUS
+========================================================= */
+
+async function loadStatus(){
+
+  const result =
+    await readClient.readContract({
+
+      address: CONTRACT,
+
+      functionName: "get_status",
+
+      args: []
+
+    });
+
+  setStatus(Boolean(result));
+}
+
+
+/* =========================================================
+   LOAD INCIDENT
+========================================================= */
+
+async function loadIncident(){
+
+  try{
+
+    const result =
+      await readClient.readContract({
+
+        address: CONTRACT,
+
+        functionName: "get_last_incident",
+
+        args: []
+
+      });
+
+    const text = String(result);
+
+    try{
+
+      const parsed = JSON.parse(text);
+
+      incidentElement.textContent =
+        JSON.stringify(parsed, null, 2);
+
+    }catch{
+
+      incidentElement.textContent = text;
+    }
+
+  }catch(error){
+
+    console.error(
+      "INCIDENT ERROR:",
+      error
+    );
+
+    incidentElement.textContent =
+      "No incident available.";
+  }
+}
+
+
+/* =========================================================
+   CHECK EXISTING WALLET
+========================================================= */
+
+async function checkExistingWallet(){
+
+  if(!window.ethereum){
+
+    setWalletUI(null);
+    return;
   }
 
+  try{
+
+    const accounts =
+      await window.ethereum.request({
+        method: "eth_accounts"
+      });
+
+    if(accounts && accounts.length){
+
+      account = accounts[0];
+
+      writeClient =
+        createClient({
+
+          chain: studionet,
+
+          account: account,
+
+          provider: window.ethereum
+
+        });
+
+      setWalletUI(account);
+
+    }else{
+
+      account = null;
+      writeClient = null;
+
+      setWalletUI(null);
+    }
+
+  }catch(error){
+
+    console.error(
+      "ACCOUNT CHECK ERROR:",
+      error
+    );
+
+    account = null;
+    writeClient = null;
+
+    setWalletUI(null);
+  }
+}
+
+
+/* =========================================================
+   CONNECT METAMASK
+========================================================= */
+
+async function connectWallet(){
+
+  if(!window.ethereum){
+
+    throw new Error(
+      "MetaMask was not detected."
+    );
+  }
+
+  show("Opening MetaMask...");
+
+  const accounts =
+    await window.ethereum.request({
+      method: "eth_requestAccounts"
+    });
+
+  if(!accounts || !accounts.length){
+
+    throw new Error(
+      "No MetaMask account was returned."
+    );
+  }
+
+  account = accounts[0];
+
+  show("Connecting to GenLayer Studionet...");
+
+  writeClient =
+    createClient({
+
+      chain: studionet,
+
+      account: account,
+
+      provider: window.ethereum
+
+    });
+
+  await writeClient.connect("studionet");
+
+  setWalletUI(account);
+
+  show("MetaMask connected.");
+
+  return writeClient;
+}
+
+
+/* =========================================================
+   ENSURE WALLET
+========================================================= */
+
+async function ensureWallet(){
+
+  if(!window.ethereum){
+
+    throw new Error(
+      "MetaMask was not detected."
+    );
+  }
+
+  if(account && writeClient){
+
+    return writeClient;
+  }
+
+  await connectWallet();
+
+  return writeClient;
+}
+
+
+/* =========================================================
+   WALLET BUTTON
+========================================================= */
+
+async function handleWalletButton(){
+
+  if(busy) return;
+
+  try{
+
+    if(account){
+
+      account = null;
+      writeClient = null;
+
+      setWalletUI(null);
+
+      show("Wallet disconnected.");
+
+      return;
+    }
+
+    busy = true;
+
+    walletButton.disabled = true;
+
+    await connectWallet();
+
+  }catch(error){
+
+    console.error(
+      "WALLET ERROR:",
+      error
+    );
+
+    show(
+      error?.message ||
+      String(error)
+    );
+
+  }finally{
+
+    busy = false;
+
+    walletButton.disabled = false;
+  }
+}
+
+
+/* =========================================================
+   REPORT EXPLOIT
+========================================================= */
+
+async function reportExploit(){
+
+  if(busy) return;
+
+  const evidenceUrl =
+    document.getElementById("url").value.trim();
+
+  if(!evidenceUrl){
+
+    show("Please enter an evidence URL.");
+    return;
+  }
+
+  try{
+
+    busy = true;
+
+    reportButton.disabled = true;
+
+    show("Preparing MetaMask transaction...");
+
+    const client =
+      await ensureWallet();
+
+    const write = {
+
+      address: CONTRACT,
+
+      functionName: "report_exploit",
+
+      args: [evidenceUrl]
+
+    };
+
+    console.log(
+      "WRITE REQUEST:",
+      write
+    );
+
+    show("Waiting for MetaMask confirmation...");
+
+    /*
+      IMPORTANT:
+      No estimateTransactionFeesForWrite() here.
+
+      The currently loaded browser SDK does not expose that
+      method, so we submit the write directly first.
+    */
+
+    const txId =
+      await client.writeContract(write);
+
+    console.log(
+      "TRANSACTION ID:",
+      txId
+    );
+
+    show(
+      "Transaction submitted. Waiting for GenLayer..."
+    );
+
+    if(
+      client.waitForDecision &&
+      txId
+    ){
+
+      try{
+
+        await client.waitForDecision({
+          hash: txId
+        });
+
+      }catch(error){
+
+        console.warn(
+          "WAIT FOR DECISION:",
+          error
+        );
+      }
+    }
+
+    await loadStatus();
+    await loadIncident();
+
+    show(
+      "Investigation transaction completed."
+    );
+
+  }catch(error){
+
+    console.error(
+      "REPORT ERROR:",
+      error
+    );
+
+    show(
+      error?.message ||
+      String(error)
+    );
+
+  }finally{
+
+    busy = false;
+
+    reportButton.disabled = false;
+  }
+}
+
+
+/* =========================================================
+   RESUME PROTOCOL
+========================================================= */
+
+async function resumeProtocol(){
+
+  if(busy) return;
+
+  try{
+
+    busy = true;
+
+    resumeButton.disabled = true;
+
+    const client =
+      await ensureWallet();
+
+    const write = {
+
+      address: CONTRACT,
+
+      functionName: "resume_protocol",
+
+      args: []
+
+    };
+
+    console.log(
+      "RESUME REQUEST:",
+      write
+    );
+
+    show(
+      "Waiting for MetaMask confirmation..."
+    );
+
+    const txId =
+      await client.writeContract(write);
+
+    console.log(
+      "RESUME TRANSACTION ID:",
+      txId
+    );
+
+    show(
+      "Resume transaction submitted..."
+    );
+
+    if(
+      client.waitForDecision &&
+      txId
+    ){
+
+      try{
+
+        await client.waitForDecision({
+          hash: txId
+        });
+
+      }catch(error){
+
+        console.warn(
+          "WAIT FOR DECISION:",
+          error
+        );
+      }
+    }
+
+    await loadStatus();
+    await loadIncident();
+
+    show(
+      "Protocol resume transaction completed."
+    );
+
+  }catch(error){
+
+    console.error(
+      "RESUME ERROR:",
+      error
+    );
+
+    show(
+      error?.message ||
+      String(error)
+    );
+
+  }finally{
+
+    busy = false;
+
+    resumeButton.disabled = false;
+  }
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+walletButton.addEventListener(
+  "click",
+  handleWalletButton
+);
+
+reportButton.addEventListener(
+  "click",
+  reportExploit
+);
+
+resumeButton.addEventListener(
+  "click",
+  resumeProtocol
+);
+
+incidentButton.addEventListener(
+  "click",
+  async function(){
+
+    try{
+
+      incidentButton.disabled = true;
+
+      show("Refreshing incident...");
+
+      await loadIncident();
+
+      show("Incident refreshed.");
+
+    }catch(error){
+
+      console.error(
+        "REFRESH ERROR:",
+        error
+      );
+
+      show(
+        error?.message ||
+        String(error)
+      );
+
+    }finally{
+
+      incidentButton.disabled = false;
+    }
+  }
+);
+
+
+/* =========================================================
+   METAMASK EVENTS
+========================================================= */
+
+if(window.ethereum){
+
+  window.ethereum.on(
+    "accountsChanged",
+    function(accounts){
+
+      if(accounts && accounts.length){
+
+        account = accounts[0];
+
+        writeClient =
+          createClient({
+
+            chain: studionet,
+
+            account: account,
+
+            provider: window.ethereum
+
+          });
+
+        setWalletUI(account);
+
+        show("Wallet account changed.");
+
+      }else{
+
+        account = null;
+        writeClient = null;
+
+        setWalletUI(null);
+
+        show("Wallet disconnected.");
+      }
+    }
+  );
+
+
+  window.ethereum.on(
+    "chainChanged",
+    function(chainId){
+
+      console.log(
+        "CHAIN CHANGED:",
+        chainId
+      );
+
+      if(chainId === "0xf22f"){
+
+        show(
+          "GenLayer Studionet connected."
+        );
+
+      }else{
+
+        show(
+          "Please switch MetaMask to GenLayer Studionet."
+        );
+      }
+    }
+  );
 }
 
 
@@ -524,10 +1085,7 @@ async function initialize(){
 
   try{
 
-    readClient =
-      createClient({
-        chain: studionet
-      });
+    createReadClient();
 
     await loadStatus();
 
@@ -548,394 +1106,13 @@ async function initialize(){
       error?.message ||
       String(error)
     );
-
   }
-
 }
 
 
-/* =========================================================
-   CHECK WALLET
-========================================================= */
+initialize();
 
-async function checkExistingWallet(){
+</script>
 
-  if(!window.ethereum){
-
-    setWalletUI(null);
-
-    return;
-
-  }
-
-  try{
-
-    const accounts =
-      await window.ethereum.request({
-        method:"eth_accounts"
-      });
-
-    if(
-      accounts &&
-      accounts.length > 0
-    ){
-
-      account =
-        accounts[0];
-
-      writeClient =
-        createClient({
-
-          chain: studionet,
-
-          account: account,
-
-          provider: window.ethereum
-
-        });
-
-      setWalletUI(account);
-
-    }else{
-
-      account = null;
-
-      writeClient = null;
-
-      setWalletUI(null);
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "ACCOUNT CHECK ERROR:",
-      error
-    );
-
-    account = null;
-
-    writeClient = null;
-
-    setWalletUI(null);
-
-  }
-
-}
-
-
-/* =========================================================
-   CONNECT WALLET
-========================================================= */
-
-async function connectWallet(){
-
-  if(!window.ethereum){
-
-    throw new Error(
-      "No wallet extension detected. Please install MetaMask."
-    );
-
-  }
-
-  show(
-    "Connecting MetaMask..."
-  );
-
-
-  const accounts =
-    await window.ethereum.request({
-      method:"eth_requestAccounts"
-    });
-
-
-  if(
-    !accounts ||
-    accounts.length === 0
-  ){
-
-    throw new Error(
-      "No account was connected."
-    );
-
-  }
-
-
-  account =
-    accounts[0];
-
-
-  writeClient =
-    createClient({
-
-      chain: studionet,
-
-      account: account,
-
-      provider: window.ethereum
-
-    });
-
-
-  show(
-    "Switching to GenLayer Studionet..."
-  );
-
-
-  await writeClient.connect(
-    "studionet"
-  );
-
-
-  const refreshedAccounts =
-    await window.ethereum.request({
-      method:"eth_accounts"
-    });
-
-
-  if(
-    refreshedAccounts &&
-    refreshedAccounts.length > 0
-  ){
-
-    account =
-      refreshedAccounts[0];
-
-  }
-
-
-  writeClient =
-    createClient({
-
-      chain: studionet,
-
-      account: account,
-
-      provider: window.ethereum
-
-    });
-
-
-  setWalletUI(account);
-
-  show(
-    "MetaMask connected."
-  );
-
-
-  return writeClient;
-
-}
-
-
-/* =========================================================
-   DISCONNECT
-========================================================= */
-
-function disconnectWallet(){
-
-  account = null;
-
-  writeClient = null;
-
-  setWalletUI(null);
-
-  show(
-    "Wallet disconnected from Sentinel."
-  );
-
-}
-
-
-/* =========================================================
-   WALLET BUTTON
-========================================================= */
-
-async function handleWalletButton(){
-
-  if(busy){
-    return;
-  }
-
-  try{
-
-    if(account){
-
-      disconnectWallet();
-
-      return;
-
-    }
-
-    await connectWallet();
-
-  }catch(error){
-
-    console.error(
-      "WALLET ERROR:",
-      error
-    );
-
-    show(
-      error?.message ||
-      String(error)
-    );
-
-  }
-
-}
-
-
-/* =========================================================
-   READ STATUS
-========================================================= */
-
-async function loadStatus(){
-
-  const result =
-    await readClient.readContract({
-
-      address: CONTRACT,
-
-      functionName:
-        "get_status",
-
-      args: []
-
-    });
-
-
-  setStatus(
-    Boolean(result)
-  );
-
-}
-
-
-/* =========================================================
-   READ INCIDENT
-========================================================= */
-
-async function loadIncident(){
-
-  try{
-
-    const result =
-      await readClient.readContract({
-
-        address: CONTRACT,
-
-        functionName:
-          "get_last_incident",
-
-        args: []
-
-      });
-
-
-    const text =
-      String(result);
-
-
-    try{
-
-      const parsed =
-        JSON.parse(text);
-
-      incidentElement.textContent =
-        JSON.stringify(
-          parsed,
-          null,
-          2
-        );
-
-    }catch{
-
-      incidentElement.textContent =
-        text;
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "INCIDENT ERROR:",
-      error
-    );
-
-    incidentElement.textContent =
-      "No incident available.";
-
-  }
-
-}
-
-
-/* =========================================================
-   ENSURE WALLET
-========================================================= */
-
-async function ensureWallet(){
-
-  if(!window.ethereum){
-
-    throw new Error(
-      "No wallet extension detected. Please install MetaMask."
-    );
-
-  }
-
-
-  const accounts =
-    await window.ethereum.request({
-      method:"eth_requestAccounts"
-    });
-
-
-  if(
-    !accounts ||
-    accounts.length === 0
-  ){
-
-    throw new Error(
-      "Please connect MetaMask first."
-    );
-
-  }
-
-
-  account =
-    accounts[0];
-
-
-  writeClient =
-    createClient({
-
-      chain: studionet,
-
-      account: account,
-
-      provider: window.ethereum
-
-    });
-
-
-  show(
-    "Checking GenLayer Studionet..."
-  );
-
-
-  await writeClient.connect(
-    "studionet"
-  );
-
-
-  const finalAccounts =
-    await window.ethereum.request({
-      method:"eth_accounts"
-    });
-
-
-  if(
-    !finalAccounts ||
-    finalAccounts.length ===
+</body>
+</html>
